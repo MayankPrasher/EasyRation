@@ -1,0 +1,356 @@
+@font-face {
+    font-family: gilroy;
+    src: url('/gilroy/Gilroy-Regular.ttf');
+}
+@font-face {
+    font-family: gilroy-bold;
+    src: url('/gilroy/Gilroy-Bold.ttf');
+}
+@font-face {
+    font-family: gilroy-semibold;
+    src: url('/gilroy/Gilroy-SemiBold.ttf');
+}
+.hi{
+    width: 100%;
+    height: 100vh;
+    position:absolute;
+    background:url('/images/main-bg2.jpg')no-repeat;
+    background-size: cover;
+    filter:grayscale(20%);
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+.hi span{
+    font-family: gilroy-bold;
+    font-size: 50px;
+    margin-bottom: 50px;
+}
+
+.hi .auth-card{
+    border-radius: 10px !important;
+    width:40%;
+    height:auto;
+    background-color: rgba(12, 27, 5, 0.568);
+    display: flex;
+    flex-direction: column;
+    /* overflow: hidden; */
+    align-items: space-between;
+}
+
+.tab-btn-container{
+    width: 100%;
+    height: 50px;
+    /* border: white solid 1px; */
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+}
+.tab-btn{
+    width: 50%;
+    height: 100%;
+    margin:1%;
+    font-family: gilroy !important;
+    font-size: 16px !important;
+}
+.tab-container{
+    width: 100%;
+    height:auto;
+    padding: 12px;
+}
+
+.tab2{
+    display: none;
+    width:100%;
+    /* background: aliceblue; */
+
+}
+.tab1{
+    display: block;
+    width:100%;
+    /* background: aliceblue; */
+
+}
+/* main-page */
+.main-container{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction:row;
+    padding: 0 !important;
+    background-color: #161900;
+    /* overflow-y: scroll; */
+}
+/* navbar */
+.main-sidebar{
+    width: 20%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: gilroy;
+    border-radius: 0px 15px 15px 0px;
+    overflow: hidden;
+    background-color: #034101;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    
+}
+.main-sidebar-profile-card-container{
+    height: 28%;
+    width: 100%;
+    display: flex;
+    /* align-items: center; */
+    flex-direction: column;
+    padding: 12px;
+    background:#c2e8f1;
+}
+.main-sidebar-profile-card{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    background-color:#FFFFFF;
+    border-radius: 14px 14px ;
+}
+.profile-photo{
+    width: 34%;
+    height: 51%;
+    border-radius: 50%;
+    /* background-color: black; */
+    background-image: url("../images/profile.png");
+    background-size:cover;
+}
+.main-sidebar-btn{
+ width: 80%;
+ height: 10%;
+ padding: 18px;
+ margin-top:13%;
+ border-radius:14px 14px;
+ background-color:#1ad84d;
+ color: white;
+ font-family: gilroy-semibold;
+}
+/* main-content */
+.main-content{
+    width:80%;
+    height: 100vh;
+    background-color: #161900;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
+}
+.main-sidebar-close-btn{
+    color: white;
+    background-color:#47af63;
+    font-size: 20px;
+    height: 5%;
+    width: 3%;
+    padding: 6px;
+    padding-left:6.5px;
+    border-radius:50%;
+    margin: 10px;
+}
+/* rationcard */
+.ration-card-container{
+  
+    margin-top: 60px;
+    width: 100%;
+    height: 65%;
+    padding:40px;
+    display:flex;
+    flex-direction: column;
+    /* border: 1px black dotted; */
+    align-items: center;
+   
+}
+.ration-card{
+    width: 60%;
+    height: 100%;
+    border-radius:20px;
+    background-color:transparent;
+    perspective: 1000px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)
+}
+.ration-card-toggle{
+    width: 47%;
+    height: 100%;
+    border-radius:20px;
+    background-color:transparent;
+    perspective: 1000px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)
+}
+/* #BCD800 */
+.color{
+    color:#1b5a73;
+    color:#313130;
+    color: #bcd800;
+    color:#dd2b1c;
+    color:#f4932c;
+
+}
+
+  .ration-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    border-radius:20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  }
+  
+  .ration-card:hover .ration-card-inner {
+    transform: rotateY(180deg);
+  }
+  .ration-card-toggle:hover .ration-card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .ration-card-front, .ration-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius:20px;
+  }
+  
+  .ration-card-front {
+    display: flex;
+    flex-direction: column;
+    background-color: #BCD800;
+    color: black;
+  }
+  .ration-card-front-row-1,.ration-card-front-row-2,.ration-card-front-row-3,.ration-card-back-row-1,.ration-card-back-row-2,.ration-card-back-row-3,.borderyes{ 
+    width:100%;
+    /* border: 1px dotted black; */
+  }
+  .ration-card-front-row-1{
+        display: flex;
+        flex-direction:row;
+        height: 25%;
+  }
+  .ration-card-front-row-2{
+        display: flex;
+        flex-direction:row;
+        height: 50%;
+  }
+  .ration-card-front-row-3{
+        height: 25%;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        padding-left: 15px;
+        padding-top: 10px;
+        font-size: 15px;
+  }
+  .type-span{
+    position: absolute;
+    right: 0;
+    font-size: 13px;
+    padding-right:15px;
+  }
+
+  
+  .ration-card-back {
+    display: flex;
+    flex-direction: column;
+    background-color: #00A759;
+    color: white;
+    transform: rotateY(180deg);
+  }
+  .ration-card-back-row-1{
+    height: 20%;
+}
+.ration-card-back-row-2{
+    background-color:white;
+    color: black;
+    height: 56%;
+}
+.ration-card-back-row-2 table{
+    width: 100%;
+}
+.ration-card-back-row-2 tr,td,th{
+    border: 1px solid black;
+}
+
+.ration-card-back-row-3{
+    display: flex;
+    flex-direction: row;
+    height: 24%;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 5px;
+    justify-content: space-between;
+}
+.ration-card-logo{
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 15%;
+    height: 100%;
+    /* border: 1px dotted black; */
+    border-radius: 50%;
+    background: black;
+    z-index:1;
+    background-image: url("../images/flag.png");
+    background-size: cover;
+}
+.ration-card-title{
+    width: 45%;
+    height:100%;
+    /* border: 1px dotted black; */
+    text-align:left;
+    padding-left: 10px;
+    padding-top: 28px;
+    font-size: 17px;
+
+}  
+.ration-card-title p{
+    margin: 0;
+} 
+.ration-card-number{
+    width: 40%;
+    /* border: 1px dotted black; */
+    height: 100%;
+    text-align: left;
+    padding: 15px;
+    font-size: 16px;
+}
+.ration-card-item-image{
+    height: 100%;
+    width: 35%;
+    /* border: 1px dotted black; */
+}
+.card-image1{
+    background: url('../images/rice.jpg');
+}
+.card-image2{
+    background: url('../images/wheat.jpg');
+}
+.ration-card-user-image{
+    height: 100%;
+    width:30%;
+    background: url('../images/pro.jpg');
+    background-size:cover;
+    background-repeat: no-repeat;
+
+}
+.gov-image{
+    width:30%;
+    height:84%;
+    /* border: 1px solid black; */
+    background: url('../images/gov.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.barcode-image{
+    width:30%;
+    height:84%;
+    /* border: 1px solid black; */
+    background: url('../images/barcode.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}

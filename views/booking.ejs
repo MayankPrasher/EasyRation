@@ -1,0 +1,43 @@
+<%- include('./header.ejs') %>
+
+<div class="pin-card-container">
+    <% if(errorMessage){ 
+        %>
+        <span class="user-message user-message--error"><%= errorMessage %></span>
+        <%}%>
+    <!-- <form class="pin-card-form"> -->
+    <div class=" pin-card mt-5">
+    <div class="pin-card-header text-center"id="pin-card-header">
+        <h3 class="mt-4" id="pin-heading"></h3>
+    </div>
+
+    <form action="/app/getStores" method="POST" style="width: 100%;height: 100%;">
+    <div class="pin-card-form-front" id="pin-card-front">
+          <input type="number" name="enteredpin" class="form-control mt-5" placeholder="eg.:110059" value="<%=oldInput.enteredpin%>">
+          <button type="submit" class="mt-4 pin-card-button" id="pin-card-btn"><i class="fa fa-angle-right" style="font-size:22px;"></i></button>
+    </div>
+</form>
+    </div>
+
+</div>
+</div>
+</div>
+</body>
+<script>
+var i = 0;
+     var txt = 'Enter your pincode'; 
+     var speed = 50; 
+
+    function typing() {
+    if (i < txt.length) {
+    document.getElementById("pin-heading").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typing, speed);
+  }
+  
+}
+
+window.onload = typing();
+
+</script>
+</html>

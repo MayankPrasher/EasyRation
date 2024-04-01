@@ -1,0 +1,54 @@
+<%- include('./header.ejs') %>
+<div class="confirm-container">
+       <div class="confirmation-card">
+        <div class="confirmation-card-header text-center">
+        Confirmation 
+        </div>
+        <div class="confirmation-card-content">
+        <table class="mt-3">
+            <tr class="text-center mt-1" style="width: 100%;">
+                <td style="width: 50%;"><span><b>FPS NAME :   </b></span>M/S KUMAR STORE</td>
+                <td style="width: 50%;"><span><b>Slot :  </b></span>9:30</td>
+            </tr>
+            <tr class="text-center" style="width: 100%;">
+                <td style="width: 50%;"><span><b>ADDRESS :  </b></span> E-206, MUKHTIYAR SINGH MARG VPO BAWANA Bawana</td>
+                <td style="width: 50%;"><span><b>Distributor:  </b></span>Shashi Kumar</td>
+            </tr>
+        </table>
+        <table class="mt-5" id="confirmation-table">
+            <tr class="text-center">
+                <th><b>Commodity</b></th>
+                <th><b>Unit</b></th>
+                <th><b>Rate</b></th>
+                <th><b>Price</b></th>
+            </tr>
+            <tr class="text-center">
+                <td>Rice</td>
+                <td>4kg</td>
+                <td>₹40/kg</td>
+                <td>₹160</td>
+            </tr>
+            <tr class="text-center">
+                <td>Wheat</td>
+                <td>4kg</td>
+                <td>₹28/kg</td>
+                <td>₹112</td>
+            </tr>
+            <tr class="text-center">
+                <td>Sugar</td>
+                <td>4kg</td>
+                <td>₹40/kg</td>
+                <td>₹160</td>
+            </tr>
+<tr>
+    <td colspan="3" class="text-end"><b>Grand Total :</b></td> 
+    <td class="text-center"><b>₹432</b></td>
+</tr>
+        </table>
+        <div class="confirmation-btn text-center">
+            <button class="btn btn-success mt-5">Confirm</button>
+        </div>
+        </div>
+       </div>
+</div>
+<%- include('./footer.ejs') %>

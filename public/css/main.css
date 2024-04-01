@@ -10,6 +10,9 @@
     font-family: gilroy-semibold;
     src: url('/gilroy/Gilroy-SemiBold.ttf');
 }
+b{
+    font-family: gilroy-bold;
+}
 .hi{
     width: 100%;
     height: 100vh;
@@ -37,7 +40,23 @@
     /* overflow: hidden; */
     align-items: space-between;
 }
+.user-message{
 
+    margin: auto;
+    /* width: 90%; */
+    border: 1px solid #4771fa;
+    /* padding:16px; */
+    border-radius: 10px; 
+    font-size: 17px !important;
+    background: #b9c9ff;
+    text-align: center;
+  }
+  
+  .user-message--error{
+    color: red;
+    border-color: red;
+    background: rgb(255,176,176);
+  }
 .tab-btn-container{
     width: 100%;
     height: 50px;
@@ -125,12 +144,17 @@
 .main-sidebar-btn{
  width: 80%;
  height: 10%;
- padding: 18px;
+ padding: 25px;
  margin-top:13%;
  border-radius:14px 14px;
  background-color:#1ad84d;
  color: white;
  font-family: gilroy-semibold;
+ font-size: 16px;
+}
+.main-sidebar-btn a{
+    color: white;
+    text-decoration: none;
 }
 /* main-content */
 .main-content{
@@ -141,17 +165,22 @@
     flex-direction: column;
     align-items: center; */
 }
-.main-sidebar-close-btn{
+.main-sidebar-close-btn,.main-sidebar-logout-btn{
     color: white;
     background-color:#47af63;
     font-size: 20px;
     height: 5%;
     width: 3%;
-    padding: 6px;
+    padding: 7px;
     padding-left:6.5px;
     border-radius:50%;
     margin: 10px;
 }
+.main-sidebar-logout-btn{
+    background-color:#e62020 !important;
+    float: right;
+}
+
 /* rationcard */
 .ration-card-container{
   
@@ -167,14 +196,6 @@
 }
 .ration-card{
     width: 60%;
-    height: 100%;
-    border-radius:20px;
-    background-color:transparent;
-    perspective: 1000px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)
-}
-.ration-card-toggle{
-    width: 47%;
     height: 100%;
     border-radius:20px;
     background-color:transparent;
@@ -329,6 +350,7 @@
 }
 .card-image2{
     background: url('../images/wheat.jpg');
+    background-size: cover;
 }
 .ration-card-user-image{
     height: 100%;
@@ -339,7 +361,7 @@
 
 }
 .gov-image{
-    width:30%;
+    width:25%;
     height:84%;
     /* border: 1px solid black; */
     background: url('../images/gov.jpg');
@@ -347,10 +369,282 @@
     background-repeat: no-repeat;
 }
 .barcode-image{
-    width:30%;
+    width:25%;
     height:84%;
     /* border: 1px solid black; */
     background: url('../images/barcode.png');
     background-size: cover;
     background-repeat: no-repeat;
+}
+/* bookyourappointment */
+.pin-card-container{
+    /* border : 1px white solid; */
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* .pin-card-form{
+    width: 100%;
+    height: 100%;
+} */
+.pin-card{
+    width: 80%;
+    height: 80%;
+    border-radius: 15px 15px 15px 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #034101;
+}
+.pin-card-header{
+    width: 100%;
+    height: 25%;
+    font-family: gilroy-semibold;
+    color: white;
+}
+.pin-card-header-back{
+    width: 100%;
+    height: 25%;
+    font-family: gilroy-semibold;
+    color: white;
+    /* display: none; */
+}
+.pin-card-form-front{
+    width: 100%;
+    height:100%;
+    background-color:#1ad84d;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+.pin-card-form-back{
+    width: 100%;
+    height:75%;
+    background-color:#1ad84d;
+    padding: 20px;
+    /* display: none; */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+/* .pin-card-form form{
+    width: 100%;
+    height: 100%;
+   
+} */
+.pin-card-button{
+    width: 6%;
+    height:22%;
+    border-radius: 50%;
+    border: none;
+}
+.pin-card-button-back{
+    width: 5%;
+    height:25%;
+    border-radius: 50%;
+    border: none;
+}
+.table-container{
+    border: white solid 1px;
+    background-color: white;
+    width: 100%;
+    height: 75%;
+    overflow: scroll;
+    margin: 0;
+}
+.table-container table{
+    font-family: gilroy;
+    width: 100%;
+}
+.table-container table td{
+    padding: 10px;
+}
+#store-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#store-table tr:hover {background-color: #ddd;}
+
+/* confirmation-page */
+.confirm-container,.slot-container,.find-card-container,.storeinfo-container{ 
+    width: 100%;
+    height:90%;
+    display: flex;
+    flex-direction: column;
+    /* border: white solid 1px; */
+    align-items: center;
+    padding-top: 4%;
+}
+.confirmation-card,.slot-card,.storeinfo-card{
+width: 80%;
+height: 90%;
+border-radius: 20px 20px 20px 20px;
+overflow: hidden;
+}
+.confirmation-card-header,.slot-card-header{
+    width: 100%;
+    height: 10%;
+    font-family: gilroy-semibold;
+    color: white;
+    background-color: #034101;
+    font-size: 25px;
+    padding-top: 0.5%;
+}
+.confirmation-card-content,.slot-card-content{
+    width: 100%;
+    height: 90%;
+    background-color: #ddd;
+    padding: 20px !important;
+}
+.confirmation-card-content table{
+    width: 100%;
+    height: 30%;
+    font-family: gilroy;
+}
+#confirmation-table tr:nth-child(even){background-color: #f2f2f2;}
+.confirmation-card-content tr{
+ border: 1px solid black;
+}
+.slot-card-content table{
+    width: 100%;
+    height:100%;
+    /* background-color: #ddd; */
+   /* margin-top: 2%; */
+}
+.slot-btn{
+width: 60%;
+}
+/* findtheStore */
+.find-card{
+width: 80%;
+height: 100%;
+border-radius: 20px 20px 20px 20px;
+overflow: hidden;
+}
+.find-card-header{
+    width: 100%;
+    height: 10%;
+    font-family: gilroy-semibold;
+    color: white;
+    background-color: #034101;
+    font-size: 25px;
+    padding-top: 1%;
+}
+.find-card-content{
+    width: 100%;
+    height: 42%;
+    background-color: #1ad84d;
+    padding: 20px !important;
+    border-radius: 0px 0px 20px 20px;
+}
+
+.find-card-table{
+    display: none;
+    width: 100%;
+    height: 48%;
+    background-color: #1ad84d;
+    padding: 20px !important;
+    /* border-radius: 0px 0px 20px 20px; */
+}
+/* StoreInfo */
+.storeinfo-card-header,.storeinfo-card-footer{
+    width: 100%;
+    height: 10%;
+    font-family: gilroy-semibold;
+    color: white;
+    background-color: #034101;
+    font-size: 25px;
+    padding-top: 1%;
+}
+.storeinfo-card-content{
+    width: 100%;
+    height: 80%;
+    background: #ddd;
+    padding: 20px !important;
+    font-family: gilroy;
+    padding-top: 30px !important ;
+}
+.info-profile-photo{
+ width: 20%;
+ height: 48%;
+ float: right;
+ background-color: red;
+ border-radius: 50%;
+ /* z-index:1; */
+}
+.storeinfo-card-content center b{
+font-size: 24px;
+}
+.storeinfo-card-content span b{
+    font-size: 20px;
+}
+.storeinfo-card-content span{
+    font-size: 18px;
+    margin:2%;
+}
+.storeinfo-card-content center button{
+    margin-top: 7%;
+    width: 20%;
+}
+.user-registration-card-container{
+    /* border : 1px white solid; */
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.user-registration-card-header{
+    width: 100%;
+    height: 15%;
+    font-family: gilroy-semibold;
+    color: white;
+}
+.user-registration-card{
+    width: 80%;
+    height: 85%;
+    border-radius: 15px 15px 15px 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #034101;
+}
+.registration-card{
+    width: 100%;
+    height: 100%;
+    background-color: #1ad84d;
+    display: flex;
+    flex-direction: column;
+}
+.aadhar-details{
+    height: 40%;
+    width: 100%;
+    display: flex;
+    flex-direction:row;
+    margin-top: 2px;
+    padding: 4px;
+}
+.aadhar-details-comp{
+    display: flex;
+    width: 50%;
+    height: 100%;
+    flex-direction: column;
+    padding: 10px;
+
+}
+.member-input-container{
+    width: 100%;
+    height: 70%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.member-input{
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
 }

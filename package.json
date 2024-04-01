@@ -14,10 +14,18 @@
   "author": "Mayank Prasher",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.3.3",
+    "connect-flash": "^0.1.1",
+    "connect-mongodb-session": "^5.0.0",
     "ejs": "^3.1.9",
-    "express": "^4.18.3"
+    "express": "^4.18.3",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
+    "mongoose": "^8.2.2",
+    "nodemailer": "^6.9.13",
+    "otp-generator": "^4.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

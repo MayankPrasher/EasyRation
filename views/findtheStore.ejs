@@ -1,0 +1,43 @@
+<%- include('./header.ejs') %>
+<div class="find-card-container">
+<div class="find-card">
+<div class="find-card-header text-center">
+   Find the Store
+</div>
+<div class="find-card-content text-center" id="find-card-content">
+    <input type="number" name="enteredareapin" class="form-control mt-5" placeholder="eg.:110059">
+    <button type="submit" class="mt-4 pin-card-button" id="find-card-btn" onclick="getStore()"><i class="fa fa-angle-down" style="font-size:22px;"></i></button>
+</div>
+<div class="find-card-table" id="find-card-table">
+<div class="table-container">
+            <table id="store-table">
+                <tr>
+                <th class="text-center" style="width: 10%;">SNo.</th>
+                <th class="text-center">Address</th>
+                <th class="text-center">Information</th>
+            </tr>
+            <tr>
+                <td class="text-center">1</td>
+                <td class="text-center">M/S KUMAR STORE
+                    E-206, MUKHTIYAR SINGH MARG VPO BAWANA Bawana	</td>
+                <td class="text-center" ><a href="/storeinfo"><button class="btn btn-info" style="color: white;">Info</button></a></td>
+            </tr>
+            <tr>
+                <td class="text-center">1</td>
+                <td class="text-center">M/S KUMAR STORE
+                    E-206, MUKHTIYAR SINGH MARG VPO BAWANA Bawana	</td>
+                <td class="text-center" ><a href="/storeinfo"><button class="btn btn-info" style="color: white;">Info</button></a></td>
+            </tr>
+            <tr>
+                <td class="text-center">1</td>
+                <td class="text-center">M/S KUMAR STORE
+                    E-206, MUKHTIYAR SINGH MARG VPO BAWANA Bawana	</td>
+                <td class="text-center" ><a href="/storeinfo"><button class="btn btn-info" style="color: white;">Info</button></a></td>
+            </tr>
+           
+            </table>
+        </div>
+</div>
+</div>
+</div>
+<%- include('./footer.ejs') %>

@@ -1,0 +1,30 @@
+const store = new Store({
+        fps_id :3708,
+        distributor:'M/S CHANDARAPATI',
+        store_name:'M/S CHANDARAPATI',
+        store_address:'BAKOLI,DELHI,NARELA',
+        pincode:110036,
+        tehsil:'Narela',
+        slots:[{slot:"9:00"},{slot:"9:20"},{slot:"9:40"},{slot:"10:00"}],
+        telephone:9999999999
+    });
+      store.save();
+
+       const admin = new Admin({
+        aadhar:{
+            aadhar_Id:121212121212,
+            name:"Mayank Prasher",
+            address:"from somewhere of someone",
+            mobile:1111111111,
+        },
+        ration_details:{
+            user_Id:123412341234,
+            members:[{member:123456789123}],
+            member_quantity:1,
+            card_type:"AAY"
+        },
+        store:{
+            fps_id:3708
+        }
+    });
+    admin.save();

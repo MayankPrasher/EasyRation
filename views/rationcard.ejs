@@ -1,0 +1,71 @@
+<%- include('./header.ejs') %>
+        
+                <div class='ration-card-container' id="ration-card-container">
+                    <div class='ration-card' id="ration-card">
+                        <div class='ration-card-inner'>
+                        <div class='ration-card-front'>
+                          <div class='ration-card-front-row-1'>
+                            <div class='ration-card-logo'></div>
+                            <div class='ration-card-title'><p>Delhi Government</p><p style="color:'#CD7C0E'">National Food Security Card</p></div>
+                            <div class='ration-card-number'><p>card no.: <%=ration_card_id%></p></div>
+                          </div>
+                          <div class='ration-card-front-row-2'>
+                            <div class='ration-card-item-image card-image1'></div>
+                            <div class='ration-card-item-image card-image2'></div>
+                            <div class='ration-card-user-image'></div>
+                          </div>
+                          <div class='ration-card-front-row-3'>
+                            <span>Name: <%=aadhar_name%></span>
+                            <span>Address: <%=aadhar_address%></span>
+                            <span>FPS Name: <%=store_name%> (<%=store_id%>)</span>
+                            <span class='type-span'>Type : <%=card_type%> FSO Area:<%=store_fso%></span>
+                            </div>
+                        </div>
+                        <div class='ration-card-back'>
+                        <div class='ration-card-back-row-1 p-3'><h3>Description of Family members</h3></div>
+                          <div class='ration-card-back-row-2'>
+                            <table>
+                                <tr>
+                                    <th style="width:'10%';">SNo.</th>
+                                    <th style="width:'10%';">Name</th>
+                                    <th style="width:'10%';">Adhaar No.</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Roshan Shah</td>
+                                    <td>1123 3311 3342</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Sahil</td>
+                                    <td>1323 3341 3742</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Sonam </td>
+                                    <td>5123 9311 3392</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Vinay Shah</td>
+                                    <td>1523 3611 6302</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Nagraj Shah</td>
+                                    <td>6123 3971 3382</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>tapi devi</td>
+                                    <td>8123 3211 9382</td>
+                                </tr>
+                            </table>
+                          </div>
+                          <div class='ration-card-back-row-3'><div class='gov-image'></div><div class='barcode-image'></div></div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                </div>
+ <%- include('./footer.ejs') %>

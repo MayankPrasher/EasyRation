@@ -30,36 +30,13 @@
                                     <th style="width:'10%';">Name</th>
                                     <th style="width:'10%';">Adhaar No.</th>
                                 </tr>
+                  <% for(var i=1; i< members.length+1; i++){ %>
                                 <tr>
-                                    <td>1</td>
-                                    <td>Roshan Shah</td>
-                                    <td>1123 3311 3342</td>
+                                    <td><%=[i]%></td>
+                                    <td><%=members[i-1].member_name%></td>
+                                    <td><%=members[i-1].member%></td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Sahil</td>
-                                    <td>1323 3341 3742</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Sonam </td>
-                                    <td>5123 9311 3392</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Vinay Shah</td>
-                                    <td>1523 3611 6302</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Nagraj Shah</td>
-                                    <td>6123 3971 3382</td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>tapi devi</td>
-                                    <td>8123 3211 9382</td>
-                                </tr>
+                                <%}%>
                             </table>
                           </div>
                           <div class='ration-card-back-row-3'><div class='gov-image'></div><div class='barcode-image'></div></div>

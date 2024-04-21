@@ -46,9 +46,14 @@ router.post('/memberRegistration',
     .withMessage('Enter Valid Aadhar Number')
 ],
 isAuth,mainController.postmemberRegistration);
-// router.get('/confirmation',authController.getConfirmation);
+router.get('/confirmation/:store',isAuth,mainController.getConfirmation);
 // router.get('/findtheStore',authController.getfindtheStore);
 router.get('/storeinfo',isAuth,mainController.getStoreinfo);
-
+router.get('/slots/:store_id',isAuth,mainController.getSlots);
+router.get('/inventory/:store_id',isAuth,mainController.getInventory);
+router.get('/update',isAuth,mainController.getUpdate);
+router.post('/update',isAuth,mainController.postUpdate);
+router.get('/slotManage/:store_id',isAuth,mainController.getslotManage);
+router.get('/store/:store_id',isAuth,mainController.getstore);
 
 module.exports = router;

@@ -29,9 +29,17 @@ const storeSchema = new Schema({
     },
     slots:[    {
         slot:{
-            type:String,
+            type:Number,
             required:true
-             }
+             },
+         booked:{
+                type:Number,
+                required:true
+                 },
+         active:{
+            type:Boolean,
+             required:true
+                     }
     }
         
     ],
@@ -50,7 +58,28 @@ const storeSchema = new Schema({
     otp:{
         type:String,
         required:true
-    }
+    },
+    commodities:[
+        {
+            commoditiy:{
+                type:String,
+                required:true
+            },
+            rate:{
+                type:Number,
+                required:true
+            },
+            item:{
+                type:String,
+                required:true
+            },
+            stock:{
+                type:Number,
+                required:true
+            }
+
+        }
+    ]
 
 });
 module.exports = mongoose.model('Store',storeSchema);

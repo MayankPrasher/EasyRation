@@ -5,71 +5,207 @@
      Choose your Slot 
      </div>
      <div class="slot-card-content border">
+      <%
+      var currentDate = new Date();
+      var currentHour = currentDate.getHours();
+      var currentMinute = currentDate.getMinutes();
+      function detectTime(check){
+        const realTime = String(currentHour)+String(currentMinute);
+        Number(realTime);
+        if(check>realTime){
+          return 1;
+        }
+        else{
+          return 0;
+        }
+      }
+      %>
+      <%if(!slots) { %>
+        <h2>No Slots are Available </h2>
+        <% }else{ %>
+        
        <table>
         <tr class="rowtable text-center" style="width:100%;">
-          <td >
-            <a href="/confirmation">
-            <button class="btn btn-outline-success slot-btn">9:00</button>
-        </a>
-          </td>  
-          <td>
-            <button class="btn btn-outline-success slot-btn">9:20</button>
-          </td>  
-          <td>
-            <button
-            class="btn btn-outline-success slot-btn">9:40</button>
-          </td>  
+         <% if(slots.find(slot=> slot.slot === 900 && detectTime(900))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=900">
+              <button class="btn btn-outline-success slot-btn">9:00</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">9:00</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=> slot.slot=== 920 && detectTime(920) )){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=920">
+              <button class="btn btn-outline-success slot-btn">9:20</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">9:20</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=> slot.slot=== 940 && detectTime(940) )){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=940">
+              <button class="btn btn-outline-success slot-btn">9:40</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">9:40</button>
+            </td>  
+         <% }%>
         </tr>
         <tr class="rowtable text-center" style="width:100%;">
-          <td >
-            <button class="btn btn-outline-success slot-btn">10:00</button>
-          </td>  
-          <td>
-            <button class="btn btn-outline-success slot-btn">10:20</button>
-          </td>  
-          <td>
-            <button
-            class="btn btn-outline-success slot-btn">10:40</button>
-          </td>  
+         <% if(slots.find(slot=> slot.slot=== 1000 && detectTime(1000))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1000">
+              <button class="btn btn-outline-success slot-btn">10:00</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">10:00</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=>slot.slot=== 1020 && detectTime(1020))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1020">
+              <button class="btn btn-outline-success slot-btn">10:20</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">10:20</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=> slot.slot=== 1040 && detectTime(1040))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1040">
+              <button class="btn btn-outline-success slot-btn">10:40</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">10:40</button>
+            </td>  
+         <% }%>
         </tr>
         <tr class="rowtable text-center" style="width:100%;">
-          <td >
-            <button class="btn btn-outline-success slot-btn">11:00</button>
-          </td>  
-          <td>
-            <button class="btn btn-outline-success slot-btn">11:20</button>
-          </td>  
-          <td>
-            <button
-            class="btn btn-outline-success slot-btn">11:40</button>
-          </td>  
+         <% if(slots.find(slot=> slot.slot=== 1100 && detectTime(1100))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1100">
+              <button class="btn btn-outline-success slot-btn">11:00</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">11:00</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=>slot.slot=== 1120 && detectTime(1120))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1120">
+              <button class="btn btn-outline-success slot-btn">11:20</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">11:20</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=> slot.slot=== 1140 && detectTime(1140))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1140">
+              <button class="btn btn-outline-success slot-btn">11:40</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">11:40</button>
+            </td>  
+         <% }%>
         </tr>
         <tr class="rowtable text-center" style="width:100%;">
-          <td >
-            <button class="btn btn-outline-success slot-btn">12:00</button>
-          </td>  
-          <td>
-            <button class="btn btn-outline-success slot-btn">12:20</button>
-          </td>  
-          <td>
-            <button
-            class="btn btn-outline-disable slot-btn">12:40</button>
-          </td>  
+         <% if(slots.find(slot=> slot.slot=== 1200 && detectTime(1200))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1200">
+              <button class="btn btn-outline-success slot-btn">12:00</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">12:00</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=>slot.slot=== 1220 && detectTime(1220))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1220">
+              <button class="btn btn-outline-success slot-btn">12:20</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">12:20</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=> slot.slot=== 1240 && detectTime(1240))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1240">
+              <button class="btn btn-outline-success slot-btn">12:40</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">12:40</button>
+            </td>  
+         <% }%>
         </tr>
         <tr class="rowtable text-center" style="width:100%;">
-          <td >
-            <button class="btn btn-outline-success slot-btn">2:00</button>
-          </td>  
-          <td>
-            <button class="btn btn-outline-success slot-btn">2:20</button>
-          </td>  
-          <td>
-            <button
-            class="btn btn-outline-success slot-btn">2:40</button>
-          </td>  
+         <% if(slots.find(slot=> slot.slot=== 1400 && detectTime(1400))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1400">
+              <button class="btn btn-outline-success slot-btn">2:00</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">2:00</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=>slot.slot=== 1420 && detectTime(1420))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1420">
+              <button class="btn btn-outline-success slot-btn">2:20</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">2:20</button>
+            </td>  
+         <% }%>
+         <% if(slots.find(slot=> slot.slot=== 1440 && detectTime(1440))){ %>
+            <td >
+              <a href="/app/confirmation/<%= store_id %>?slot=1440">
+              <button class="btn btn-outline-success slot-btn">2:40</button>
+             </a>
+            </td>  
+          <%} else{%>
+            <td >
+              <button class="btn btn-disabled slot-btn">2:40</button>
+            </td>  
+         <% }%>
         </tr>
        </table>
+       <% } %>
      </div>
     </div>
 </div>
-<%- include('./footer.ejs') %>
+</div>
+</div>
+</body>
+</html>

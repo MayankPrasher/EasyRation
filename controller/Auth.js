@@ -97,7 +97,17 @@ if(!errors.isEmpty()){
         tab:'tab2'
     });
 }
-bcrypt
+User.findOne({aadhar:aadhar})
+.then(user=>{
+    if(user){
+        return res.render('auth',{
+            errorMessage:"User already Exists !!",
+            oldInput:{aadhar:aadhar,name:name,email:email},
+            validationErrors:""
+        });
+    }
+    else{
+        bcrypt
 .hash(password,12)
 .then(hashedPassword=>{
     const user = new User({
@@ -131,15 +141,16 @@ bcrypt
 
         }
     )
-    .catch((err)=>{
-        console.log(err);
-    })
 })
     .catch((err)=>{
         console.log(err);
     })
 
-
+    }
+})
+.catch(err=>{
+    console.log(err);
+})
 };
 
 

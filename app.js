@@ -6,6 +6,8 @@ const authRoutes = require('./routes/Auth');
 const mainRoutes = require('./routes/main');
 const flash = require('connect-flash');
 const session = require('express-session');
+const cron = require('node-cron');
+const mainController = require('./controller/Main');
 const mongodbStore = require('connect-mongodb-session')(session);
 const MONGODB_URI ='mongodb+srv://prasher6789:Mayank%401509@cluster0.dxwz3zy.mongodb.net/easyration';
 const app = express();
@@ -25,6 +27,7 @@ app.use(flash());
 // app.use(flash()); 
 app.use('/',authRoutes);
 app.use('/app',mainRoutes);
+cron.schedule('0 0 * * *',mainController.updateSlot);
 moongoose.connect(MONGODB_URI)
 .then(
     result=>{

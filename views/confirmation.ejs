@@ -5,9 +5,13 @@
         Confirmation 
         </div>
         <div class="confirmation-card-content">
+            <form action="/app/confirm" method="POST">
         <table class="mt-3">
             <tr class="text-center mt-1" style="width: 100%;">
+                <input type="hidden" name="store_id" value="<%=store_id%>">
+                <input type="hidden" name="store_name" value="<%=store.store_name%>">
                 <td style="width: 50%;"><span><b>FPS NAME :   </b></span><%=store.store_name%></td>
+                <input type="hidden" name="slot" value="<%=slot%>">
                 <td style="width: 50%;"><span><b>Slot :  </b></span>
                     <% if(slot== 900){%>
                         9:00
@@ -45,6 +49,8 @@
                 </td>
             </tr>
             <tr class="text-center" style="width: 100%;">
+                <input type="hidden" name="store_address" value="<%=store.store_address%>">
+                <input type="hidden" name="distributor" value="<%=store.distributor%>">
                 <td style="width: 50%;"><span><b>ADDRESS :  </b></span><%=store.store_address%></td>
                 <td style="width: 50%;"><span><b>Distributor:  </b></span><%=store.distributor%></td>
             </tr>
@@ -58,6 +64,10 @@
             </tr>
             <% var total = 0 %>
              <% for(let i=0; i< store.commodities.length; i++){ %>
+                <input type="hidden" name="commodity" value="<%= store.commodities[i].item %>">
+                <input type="hidden" name="unit" value="<%=members_qty+1%>">
+                <input type="hidden" name="rate" value="<%= store.commodities[i].rate %>">
+                <input type="hidden" name="price" value="<%= store.commodities[i].rate * (members_qty+1) %>">
                <tr class="text-center">
                 <td><%= store.commodities[i].item %></td>
                 <td><%=members_qty+1%>Kg</td>
@@ -66,13 +76,15 @@
                </tr>
                <% total = total + (store.commodities[i].rate * (members_qty+1))  %>
             <%}%>
+            <input type="hidden" name="total" value="<%= total %>">
     <td colspan="3" class="text-end"><b>Grand Total :</b></td> 
     <td class="text-center"><b>₹<%= total %></b></td>
 </tr>
         </table>
         <div class="confirmation-btn text-center">
-            <button class="btn btn-success mt-5">Confirm</button>
+            <input type="submit" class="btn btn-success mt-5" placeholder="confirm">
         </div>
+    </form>
         </div>
        </div>
 </div>

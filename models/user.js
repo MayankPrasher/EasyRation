@@ -21,6 +21,10 @@ const userSchema = new Schema({
     },
     password:{
         type:String
+    },
+    monthlyQuota:{
+        type:Boolean,
+        required:true
     }
 });
 

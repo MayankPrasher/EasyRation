@@ -55,5 +55,12 @@ router.get('/update',isAuth,mainController.getUpdate);
 router.post('/update',isAuth,mainController.postUpdate);
 router.get('/slotManage/:store_id',isAuth,mainController.getslotManage);
 router.get('/store/:store_id',isAuth,mainController.getstore);
+router.post('/confirm',isAuth,mainController.completeConfirmation);
+router.get('/userPreviousTrans',isAuth,mainController.getuserPreviousTrans);
+router.get('/upcomingStoretrans',isAuth,mainController.getupcomingStoretrans);
+router.get('/storePrevTrans',isAuth,mainController.getstorePrevTrans);
+router.get('/confrecipt/:order_id',isAuth,mainController.getconfrecipt);
+router.get('/recipt/:order_id',isAuth,mainController.getrecipt);
+router.get('/completetrans/:order_id',isAuth,mainController.getcompletetrans);
 
 module.exports = router;

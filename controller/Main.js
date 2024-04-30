@@ -1,11 +1,17 @@
 // const user = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 const User = require('../models/user');
 const Store = require('../models/store');
 const Admin = require('../models/central');
+const Order = require('../models/order');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const axios = require('axios');
 const {validationResult} = require('express-validator');
 var mongoose = require('mongoose');
+const PDFDocument = require('pdfkit');
 const user = require('../models/user');
 const central = require('../models/central');
 mongoose.set('debug', true);
@@ -39,6 +45,7 @@ exports.getmain = (req ,res , next )=> {
                 const store_fso = store.FSO_area;
 
                 return res.render('rationcard',{
+                    aadhar:req.session.user.aadhar,
                     ration_card_id : ration_card_id,
                     aadhar_name :aadhar_name,
                     aadhar_address :aadhar_address,
@@ -48,7 +55,6 @@ exports.getmain = (req ,res , next )=> {
                     members_qty:members_qty,
                     store_name:store_name,
                     store_fso:store_fso,
-                    isAuth:req.session.isLoggedIn
                 });
             }
             else{
@@ -77,6 +83,8 @@ exports.getStores = (req , res, next) =>{
      if(!errors.isEmpty()){
         console.log(errors.array());
         return res.status(422).render('booking',{
+            aadhar_name:req.session.user.name,
+            aadhar:req.session.user.aadhar,
             errorMessage:errors.array()[0].msg,
             oldInput:{enteredpin:enteredpin},
             validationErrors:errors.array(),
@@ -86,6 +94,8 @@ Store.find({pincode:enteredpin})
 .then(stores=>{
     if(stores.length<=0){
         return res.status(422).render('booking',{
+            aadhar_name:req.session.user.name,
+            aadhar:req.session.user.aadhar,
             errorMessage:"Invalid Pincode",
             oldInput:{enteredpin:enteredpin},
             validationErrors:errors.array(),
@@ -93,6 +103,8 @@ Store.find({pincode:enteredpin})
     }
     else{
         res.render('chooseStore',{
+            aadhar_name:req.session.user.name,
+            aadhar:req.session.user.aadhar,
             stores:stores,
             isAuth:req.session.isLoggedIn
         });
@@ -108,12 +120,33 @@ Store.find({pincode:enteredpin})
 };
 
 exports.getBooking = (req , res, next) =>{
-    if(req){
-        res.render('booking',{
-            oldInput:"",
-            errorMessage:""
-        });
-    }
+    const aadhar = req.session.user.aadhar;
+    User.findOne({aadhar:aadhar})
+    .then(user=>{
+       if(!user){
+        console.log("user not found");
+       }
+       else{
+        if(user.monthlyQuota){
+            res.render('Nobooking',{
+                aadhar_name:req.session.user.name,
+                aadhar:req.session.user.aadhar,
+                oldInput:"",
+                errorMessage:""
+            });
+        }else{
+            res.render('booking',{
+                aadhar_name:req.session.user.name,
+                aadhar:req.session.user.aadhar,
+                oldInput:"",
+                errorMessage:""
+            });
+        }
+       }
+    })
+    .catch()
+   
+
 };
 exports.getStoreDash = (req , res, next) =>{
     const store_name = req.session.user.store_name;
@@ -210,17 +243,36 @@ exports.postuserRegistration = (req,res,next)=>{
 exports.postmemberRegistration = (req , res, next) =>{
     const store_name = req.session.user.store_name;
     const session_fps_id = req.session.user.fps_id;
-    const member_quantity = parseInt(req.body.member_quantity); 
+    const member_quantity = Number(req.body.member_quantity); 
     const user_id = Number(req.body.user_id);
     const members = req.body.member;
     const member_names = req.body.member_name;
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).render('memberRegistration',{
+            errorMessage:errors.array()[0].msg,
+            store_name:store_name,
+            fps_id: session_fps_id,
+            user_id:user_id,
+            member_quantity:member_quantity,
+            validationErrors:errors.array(),
+        })
+}
 
 console.log(member_names);
 var insert_members = [];
 
-for (var i = 0; i < member_quantity; i++) {
-    insert_members[i] = { member:members[i] , member_name:member_names[i]};
+if(member_quantity>1){
+    for (var i = 0; i < member_quantity; i++) {
+        insert_members[i] = { member:members[i] , member_name:member_names[i]};
+    } 
 }
+else if(member_quantity==1){
+    for (var i = 0; i < member_quantity; i++) {
+        insert_members[i] = { member:members , member_name:member_names};
+    }
+}
+
 insert_members.forEach(element => {
     console.log(element);
 });
@@ -228,10 +280,10 @@ insert_members.forEach(element => {
 Admin.findOneAndUpdate(
     { 'ration_details.user_Id': user_id }, // Filter criteria to find the document
     { $set: { 'ration_details.members': insert_members } }, // Update operation
-    { new: true } // To return the updated document
+    { new: true }
 )
     .then(updatedCentral => {
-        // console.log("Updated Central document:", updatedCentral);
+        console.log("Updated Central document:", updatedCentral);
         res.render('userRegistration',{
             store_name:store_name,
             fps_id: session_fps_id,
@@ -274,6 +326,8 @@ exports.getSlots = (req , res, next) =>{
         if(store){
           const slots = store.slots;
           return res.render('slots',{
+            aadhar_name:req.session.user.name,
+            aadhar:req.session.user.aadhar,
             slots:slots,
             store_id:store_id,
             errorMessage:"",
@@ -290,7 +344,7 @@ exports.getSlots = (req , res, next) =>{
     
     
 };
-exports. updateSlot = async() =>{
+exports.updateSlot = async() =>{
     const update = {
         $set:{
             'slots.0.slot':900,
@@ -347,6 +401,13 @@ exports. updateSlot = async() =>{
         console.error('Error to update the slot',err);
     }
 }
+exports.updateUserMonth = async()=>{
+    try{
+        await User.updateMany({}, {$set:{ monthlyQuota:false}});
+    }catch(error){
+       console.error('Error updating monthly field:',error);
+    }
+}
 exports.getConfirmation = (req,res,next)=>{
     const store_id = req.params.store;
     const slot = req.query.slot;
@@ -359,6 +420,8 @@ exports.getConfirmation = (req,res,next)=>{
          .then(store=>{
              if(store){
                return res.render('confirmation',{
+                aadhar_name:req.session.user.name,
+                aadhar:req.session.user.aadhar,
                  slot:slot,
                  store_id:store_id,
                  members_qty:members_qty,
@@ -484,4 +547,345 @@ exports.getStoreinfo = (req,res,next)=>{
         res.render('storeinfo');
     }
 }
+exports.completeConfirmation = (req,res,next)=>{
+    const store_name = req.body.store_name;
+    const slot = Number(req.body.slot);
+    const store_address = req.body.store_address;
+    const distributor = req.body.distributor;
+    const commodity = req.body.commodity;
+    const unit = req.body.unit;
+    const rate = req.body.rate;
+    const price = req.body.price;
+    const total = Number(req.body.total);
+    const store_id =  Number(req.body.store_id);
+    const aadhar = Number(req.session.user.aadhar);
+    const date = new Date();
 
+    const commodities = [];
+
+    for(let i = 0 ; i<commodity.length;i++){
+        commodities[i]={
+            commodity:commodity[i],
+            unit:Number(unit[i]),
+            price:Number(price[i]),
+            rate:Number(rate[i])
+        }
+    }
+    const updateQuery = {
+        $inc: {
+          "commodities.$[elem].stock": -Number(unit[0]) 
+        }
+      };
+    const updateBookQuery = {
+        $inc: {
+          "slots.$[elem].booked": 1 
+        }
+      };
+      var bookFilter =[];
+      if(slot==900){
+        bookFilter = [{
+            "elem.slot":900
+          }];
+      }
+      else if(slot==920){
+         bookFilter = [{
+            "elem.slot":920
+          }];
+      }
+      else if(slot==940){
+         bookFilter = [{
+            "elem.slot":940
+          }];
+      }
+      else if(slot==1000){
+         bookFilter = [{
+            "elem.slot":1000
+          }];
+      }
+      else if(slot==1020){
+         bookFilter = [{
+            "elem.slot":1020
+          }];
+      }
+      else if(slot==1040){
+         bookFilter = [{
+            "elem.slot":1040
+          }];
+      }
+      else if(slot==1100){
+         bookFilter = [{
+            "elem.slot":1100
+          }];
+      }
+      else if(slot==1120){
+         bookFilter = [{
+            "elem.slot":1120
+          }];
+      }
+      else if(slot==1140){
+         bookFilter = [{
+            "elem.slot":1140
+          }];
+      }
+      else if(slot==1200){
+         bookFilter = [{
+            "elem.slot":1200
+          }];
+      }
+      else if(slot==1220){
+         bookFilter = [{
+            "elem.slot":1200
+          }];
+      }
+      else if(slot==1240){
+     bookFilter = [{
+            "elem.slot":1200
+          }];
+      }
+      else if(slot==1400){
+         bookFilter = [{
+            "elem.slot":1200
+          }];
+      }
+      else if(slot==1420){
+         bookFilter = [{
+            "elem.slot":1200
+          }];
+      }
+      else if(slot==1440){
+         bookFilter = [{
+            "elem.slot":1200
+          }];
+      }
+      console.log(bookFilter);
+      const riceFilter = [{
+        "elem.item":"Rice"
+      }];
+      const wheatFilter = [{
+        "elem.item":"Wheat"
+      }];
+      const sugarFilter = [{
+        "elem.item":"Sugar"
+      }];
+      const oilFilter = [{
+        "elem.item":"Kerosene"
+      }];
+        console.log(commodities);
+        console.log(store_id);
+        console.log(aadhar);
+        console.log(date);
+        const data = {
+            "merchantId": "PGTESTPAYUAT",
+            "merchantTransactionId": "MT7850590068188104",
+            "merchantUserId": "MUID123",
+            "amount": total*100,
+            "redirectUrl": "http://localhost:4001/app/userPreviousTrans",
+            "redirectMode": "REDIRECT",
+            // "callbackUrl": "https://webhook.site/callback-url",
+            "mobileNumber": "9999999999",
+            "paymentInstrument": {
+              "type": "PAY_PAGE"
+            }
+          }
+          const payload = JSON.stringify(data);
+          const payloadMain = Buffer.from(payload).toString('base64');
+          const key = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+          const keyIndex = 1;
+          const string = payloadMain + '/pg/v1/pay'+key;
+          const sha256 = crypto.createHash('sha256').update(string).digest('hex');
+          const checksum = sha256 + "###" +keyIndex;
+            const options = {
+            method: 'post',
+            url: 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay',
+            headers: {
+                    accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-VERIFY':checksum
+                            },
+            data: {
+                request : payloadMain
+            }
+            };
+            axios
+            .request(options)
+                .then(function (response) {
+                   Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:riceFilter})
+                   .then(
+                    ack=>{
+                        Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:wheatFilter})
+                        .then(
+                            ack2=>{
+                                Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:sugarFilter})
+                                .then(
+                                    ack3=>{
+                                        Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:oilFilter})
+                                       .then(
+                                        Store.updateOne({fps_id:store_id},updateBookQuery,{arrayFilters:bookFilter})
+                                        .then(
+                                            ack5=>{
+                                                User.updateOne({aadhar:req.session.user.aadhar},{$set:{monthlyQuota:true}})
+                                                .then(ack7=>{
+                                                    console.log(ack7)
+                                                })
+                                                .catch(err=>{
+                                                    console.log(err);
+                                                })
+                                            }
+                                        )
+                                       )
+                                    }
+                                )
+                            }
+                        )
+                        .catch(err=>{
+                            console.log(err);
+                        })
+                    }
+                   )
+                const order = new Order({
+                    aadhar : aadhar,
+                    store_id:store_id,
+                    completed:false,
+                    slot:slot,
+                    date:date,
+                    commodities:commodities,
+                    total:total
+                });
+                order.save();
+                res.redirect(response.data.data.instrumentResponse.redirectInfo.url);
+                // return response.data;
+            })
+            .then(result=>{
+                console.log("Success");
+         })
+    
+}
+exports.getuserPreviousTrans = (req,res,next)=>{
+    const aadhar = req.session.user.aadhar;
+    Order.find({aadhar:aadhar})
+    .then(orders=>{
+        console.log(orders);
+        res.render('userPrevTrans',{
+            aadhar_name:req.session.user.name,
+            aadhar:req.session.user.aadhar,
+            orders:orders
+         });
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+exports.getupcomingStoretrans = (req,res,next)=>{
+    const store_id = req.session.user.fps_id;
+    Order.find({store_id:store_id,completed:false})
+    .then(orders=>{
+        console.log(orders);
+        res.render('upcomingStoretrans',{
+            store_name:req.session.user.store_name,
+            fps_id:req.session.user.fps_id,
+            orders:orders
+         });
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+exports.getstorePrevTrans = (req,res,next)=>{
+    const store_id = req.session.user.fps_id;
+    Order.find({store_id:store_id,completed:true})
+    .then(orders=>{
+        console.log(orders);
+        res.render('storePrevTrans',{
+            store_name:req.session.user.store_name,
+            fps_id:req.session.user.fps_id,
+            orders:orders
+         });
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+exports.getconfrecipt = (req,res,next)=>{
+    const order_id = req.params.order_id;
+    Order.findOne({_id:order_id})
+    .then(order=>{
+        if(!order){
+            console.log('No order found');
+        }
+        if(Number(order.aadhar)!== Number(req.session.user.aadhar)){
+           console.log("Not authorized");
+        }
+        const confreciptName = 'confrecipt-'+order_id+'.pdf';
+        const confreciptPath = path.join('user','confrecipt',confreciptName);
+        const pdfDoc = new PDFDocument();
+        res.setHeader('Content-Type','application/pdf');
+        res.setHeader('Content-Disposition','inline; filename="'+confreciptName+'"');
+        pdfDoc.pipe(fs.createWriteStream(confreciptPath));
+        pdfDoc.pipe(res);
+        pdfDoc.font('public/gilroy/Gilroy-Heavy.ttf').fontSize(30).text('EasyRation.',{
+            underline:false,
+            align:'center',
+        });
+        pdfDoc.font('public/gilroy/Gilroy-Bold.ttf').fontSize(21).text('Confirmation-Recipt',{
+            underline:true,
+            align:'center',
+        });
+        pdfDoc.text('--------------------------------------------',{
+            align:'center'
+        });
+        pdfDoc.end();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+exports.getrecipt = (req,res,next)=>{
+    const order_id = req.params.order_id;
+    Order.findOne({_id:order_id})
+    .then(order=>{
+        if(!order){
+            console.log('No order found');
+        }
+        if(Number(order.aadhar)== Number(req.session.user.aadhar)||Number(order.store_id)==Number(req.session.user.fps_id)){
+           console.log("authorized");
+        }
+        else{
+            console.log("Not authorized");
+        }
+        const confreciptName = 'invoice-'+order_id+'.pdf';
+        const confreciptPath = path.join('user','invoice',confreciptName);
+        const pdfDoc = new PDFDocument();
+        res.setHeader('Content-Type','application/pdf');
+        res.setHeader('Content-Disposition','inline; filename="'+confreciptName+'"');
+        pdfDoc.pipe(fs.createWriteStream(confreciptPath));
+        pdfDoc.pipe(res);
+        pdfDoc.font('public/gilroy/Gilroy-Heavy.ttf').fontSize(30).text('EasyRation.',{
+            underline:false,
+            align:'center',
+        });
+        pdfDoc.font('public/gilroy/Gilroy-Bold.ttf').fontSize(21).text('Invoice',{
+            underline:true,
+            align:'center',
+        });
+        pdfDoc.text('--------------------------------------------',{
+            align:'center'
+        });
+        pdfDoc.end();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+exports.getcompletetrans = (req,res,next)=>{
+const order_id = req.params.order_id;
+
+Order.findByIdAndUpdate(order_id,{completed:true},{new:true})
+.then(updatedDocument=>{
+    console.log("Done!!")
+    res.redirect('/app/upcomingStoretrans');
+})
+.catch(err=>{
+    console.log(err);
+})
+
+}

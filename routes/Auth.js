@@ -18,10 +18,7 @@ router.post('/authSignup',[
 router.post('/authLogin',[
     check('loginemail')
     .isEmail()
-    .withMessage('Enter the valid email.'),
-    check('loginpassword')
-    .isLength({min:14})
-    .withMessage('Enter the Valid Password')
+    .withMessage('Enter the valid email.')
 ],authController.postAuthlogin);
 router.post('/logout',authController.postLogout);
 router.get('/store-login',authController.getStorelogin);

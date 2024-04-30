@@ -53,6 +53,7 @@ exports.postAuthlogin = (req ,res , next )=> {
         bcrypt.compare(loginpassword,flag.password)
         .then(match=>{
             if(match){
+            
             req.session.isLoggedIn = true;
             req.session.user = flag;
              console.log("User is authentic");
@@ -86,7 +87,7 @@ exports.postAuthsignup = (req ,res , next )=> {
     const name = req.body.username;
     const email = req.body.email;
     const usertype = "user";
-    const password = name + '@' +aadhar;
+    const password = name ;
 const errors = validationResult(req);
 if(!errors.isEmpty()){
     console.log(errors.array());
@@ -100,6 +101,7 @@ if(!errors.isEmpty()){
 User.findOne({aadhar:aadhar})
 .then(user=>{
     if(user){
+
         return res.render('auth',{
             errorMessage:"User already Exists !!",
             oldInput:{aadhar:aadhar,name:name,email:email},
@@ -117,26 +119,39 @@ User.findOne({aadhar:aadhar})
         usertype : usertype,
         password:hashedPassword
     });
-    Admin.findOne({'aadhar.aadhar_Id':req.body.aadhar})
+    Admin.findOne({'aadhar.aadhar_Id':req.body.aadhar,'aadhar.name':name})
     .then(id=>{
         if(id){
+            console.log(id);
             user.save();
             res.redirect('/');
             console.log('User Created');
-            return transporter.sendMail({
+             transporter.sendMail({
                 to :email,
                 from:"prasher6789@gmail.com",
                 subject:"Signup succeeded!",
                 html:'<h1>You successfully signed up!</h1><br><h2>Here is your password:'+password})
+                return res.status(422).render('auth',{
+                    errorMessage:"Sign Up successfull, password sent on Email",
+                    oldInput:"",
+                    validationErrors:"",
+                    tab:'tab2'
+                });
         }
         else{
             console.log('User not Created');
-            res.redirect('/');
-            return transporter.sendMail({
-               to :email,
-               from:"prasher6789@gmail.com",
-               subject:"Signup Failed",
-               html:'<h1>either your aadhar number is incorrect or your aadhar is not linked with your Ration card</h1><br>'})
+               transporter.sendMail({
+                to :email,
+                from:"prasher6789@gmail.com",
+                subject:"Signup Failed",
+                html:'<h1>either your aadhar number is incorrect or your aadhar is not linked with your Ration card</h1><br>'})
+            return res.status(422).render('auth',{
+                errorMessage:"Aadhar or Name is Incorrect, SignUp with correct credentials",
+                oldInput:{aadhar:aadhar,name:name,email:email},
+                validationErrors:"Aadhar or Name is Incorrect",
+                tab:'tab2'
+            });
+             
         }
 
         }

@@ -144,7 +144,9 @@ exports.getBooking = (req , res, next) =>{
         }
        }
     })
-    .catch()
+    .catch(err=>{
+        console.log(err);
+    })
    
 
 };
@@ -670,45 +672,45 @@ exports.completeConfirmation = (req,res,next)=>{
       const oilFilter = [{
         "elem.item":"Kerosene"
       }];
-        console.log(commodities);
-        console.log(store_id);
-        console.log(aadhar);
-        console.log(date);
-        const data = {
-            "merchantId": "PGTESTPAYUAT",
-            "merchantTransactionId": "MT7850590068188104",
-            "merchantUserId": "MUID123",
-            "amount": total*100,
-            "redirectUrl": "http://localhost:4001/app/userPreviousTrans",
-            "redirectMode": "REDIRECT",
-            // "callbackUrl": "https://webhook.site/callback-url",
-            "mobileNumber": "9999999999",
-            "paymentInstrument": {
-              "type": "PAY_PAGE"
-            }
-          }
-          const payload = JSON.stringify(data);
-          const payloadMain = Buffer.from(payload).toString('base64');
-          const key = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
-          const keyIndex = 1;
-          const string = payloadMain + '/pg/v1/pay'+key;
-          const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-          const checksum = sha256 + "###" +keyIndex;
-            const options = {
-            method: 'post',
-            url: 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay',
-            headers: {
-                    accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-VERIFY':checksum
-                            },
-            data: {
-                request : payloadMain
-            }
-            };
-            axios
-            .request(options)
-                .then(function (response) {
+        // console.log(commodities);
+        // console.log(store_id);
+        // console.log(aadhar);
+        // console.log(date);
+        // const data = {
+        //     "merchantId": "M2306160483220675579140",
+        //     "merchantTransactionId": "e3e1mmcccdmm9ef8vdfmd7b",
+        //     "merchantUserId": "MUID123",
+        //     "amount": total*100,
+        //     "redirectUrl": "http://localhost:4001/app/userPreviousTrans",
+        //     "redirectMode": "REDIRECT",
+        //     // "callbackUrl": "https://webhook.site/callback-url",
+        //     "mobileNumber": "9999999999",
+        //     "paymentInstrument": {
+        //       "type": "PAY_PAGE"
+        //     }
+        //   }
+        //   const payload = JSON.stringify(data);
+        //   const payloadMain = Buffer.from(payload).toString('base64');
+        //   const key = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+        //   const keyIndex = 1;
+        //   const string = payloadMain + '/pg/v1/pay'+key;
+        //   const sha256 = crypto.createHash('sha256').update(string).digest('hex');
+        //   const checksum = sha256 + "###" +keyIndex;
+        //     const options = {
+        //     method: 'post',
+        //     url: 'https://mercury-uat.phonepe.com/v3/charge',
+        //     headers: {
+        //             accept: 'application/json',
+        //             'Content-Type': 'application/json',
+        //             'X-VERIFY':checksum
+        //                     },
+        //     data: {
+        //         request : payloadMain
+        //     }
+        //     };
+            // axios
+            // .request(options)
+                // .then(function (response) {
                    Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:riceFilter})
                    .then(
                     ack=>{
@@ -752,12 +754,12 @@ exports.completeConfirmation = (req,res,next)=>{
                     total:total
                 });
                 order.save();
-                res.redirect(response.data.data.instrumentResponse.redirectInfo.url);
+                res.redirect('http://localhost:4001/app/userPreviousTrans');
                 // return response.data;
-            })
-            .then(result=>{
-                console.log("Success");
-         })
+            // })
+        //     .then(result=>{
+        //         console.log("Success");
+        //  })
     
 }
 exports.getuserPreviousTrans = (req,res,next)=>{
@@ -777,15 +779,26 @@ exports.getuserPreviousTrans = (req,res,next)=>{
 }
 exports.getupcomingStoretrans = (req,res,next)=>{
     const store_id = req.session.user.fps_id;
-    Order.find({store_id:store_id,completed:false})
-    .then(orders=>{
+    Store.findOne({fps_id:store_id})
+    .then(store=>{
+        if(store){
+          const slots = store.slots;
+          Order.find({store_id:store_id,completed:false})
+         .then(orders=>{
         console.log(orders);
         res.render('upcomingStoretrans',{
             store_name:req.session.user.store_name,
             fps_id:req.session.user.fps_id,
-            orders:orders
+            orders:orders,
+            slots:slots
          });
     })
+        }
+        else{
+            console.log("Store Not Found");
+        }
+    })
+    
     .catch(err=>{
         console.log(err);
     })

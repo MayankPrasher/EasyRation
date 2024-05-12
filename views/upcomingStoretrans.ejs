@@ -1,5 +1,20 @@
 <%- include('./store-header.ejs') %>
 <div class="trans-card-container" onclick="getTable()">
+    <%
+      var currentDate = new Date();
+      var currentHour = currentDate.getHours();
+      var currentMinute = currentDate.getMinutes();
+      function detectTime(check,checkDate){
+        const realTime = String(currentHour)+String(currentMinute);
+        Number(realTime);
+        if(check>realTime){
+          return 1;
+        }
+        else{
+          return 0;
+        }
+      }
+      %>
     <!-- <form class="pin-card-form"> -->
     <div class=" pin-card mt-5">
     <div class="pin-card-header-back text-center " id="pin-card-header-back">
@@ -32,7 +47,12 @@
                         <td class="text-center">Not Collected</td>
                     <%}%>
                     <td class="text-center"><%=order.total%></td>
+                    
+                    <%if(detectTime(order.slot,order.date)){%>
                     <td class="text-center"><a href="/app/completetrans/<%=order._id%>"><button class="btn btn-success">Complete</button></a></td>
+                    <% } else {%>
+                        <td class="text-center">Slot Expired!</td>
+                        <%}%>
                 </tr>
                 <%}%>
                 </table>

@@ -47,20 +47,31 @@ exports.postAuthlogin = (req ,res , next )=> {
     .then(flag=>{
         if(!flag){
         // req.flash('error','Invalid email or password.');
-        console.log("Invalid Email");
-        res.redirect('/');
+        // console.log("Invalid Email");
+        // res.redirect('/');
+        return res.status(422).render('auth',{
+            errorMessage:"Invalid Email",
+            oldInput:{loginemail:loginemail,loginpassword:loginpassword},
+            validationErrors:"",
+            tab:'tab1'
+        });
         }
         bcrypt.compare(loginpassword,flag.password)
         .then(match=>{
             if(match){
             
-            req.session.isLoggedIn = true;
-            req.session.user = flag;
-             console.log("User is authentic");
-             res.redirect('/app/main');
+                req.session.isLoggedIn = true;
+                req.session.user = flag;
+                console.log("User is authentic");
+                return res.redirect('http://localhost:4001/app/main');
             }
             else{
-                console.log("password is incorrect.");
+                return res.status(422).render('auth',{
+                    errorMessage:"password is Incorrect.",
+                    oldInput:{loginemail:loginemail,loginpassword:loginpassword},
+                    validationErrors:"",
+                    tab:'tab1'
+                });
             }
         })
         .catch((err)=>{
@@ -117,7 +128,8 @@ User.findOne({aadhar:aadhar})
         name : name,
         email:email,
         usertype : usertype,
-        password:hashedPassword
+        password:hashedPassword,
+        monthlyQuota:false
     });
     Admin.findOne({'aadhar.aadhar_Id':req.body.aadhar,'aadhar.name':name})
     .then(id=>{

@@ -27,8 +27,8 @@ app.use(flash());
 // app.use(flash()); 
 app.use('/',authRoutes);
 app.use('/app',mainRoutes);
-cron.schedule('0 0 * * *',mainController.updateSlot);
-cron.schedule('0 0 1 * *',mainController.updateUserMonth);
+cron.schedule('0 0 * * *',mainController.updateSlot,{scheduled:true,timezone:'Asia/Kolkata'});
+cron.schedule('0 0 1 * *',mainController.updateUserMonth,{scheduled:true});
 moongoose.connect(MONGODB_URI)
 .then(
     result=>{

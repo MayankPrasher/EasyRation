@@ -1,10 +1,4 @@
-<% if(user!=null||user!=undefined){%>
-   <%- include('./header.ejs')%>
-   <% }else{%>
-   <%- include('./store-header.ejs')%>
-   <% }%>
-    
-
+<%-include('./header.ejs')%>
 <div class="storeinfo-container">
 <div class="storeinfo-card ">
     <div class="storeinfo-card-header text-center">
@@ -19,9 +13,7 @@
      <span><b>Address :</b> <%=address%></span><br>
      <span><b>Tehsil : </b><%=tehsil%></span><br>
      <span><b>Telephone No. : </b><%=telephone%></span>
-     <% if(user!=null||user!=undefined){%>
-     <center><a href="/slots"><button class="btn btn-success">Book your Slot</button></a></center>
-     <%}%>
+     <center><a href="/app/slots/<%=fps_id%>"><button class="btn btn-success">Book your Slot</button></a></center>
     </div>
     <div class="storeinfo-card-footer">
     </div>

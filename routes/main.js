@@ -47,8 +47,9 @@ router.post('/memberRegistration',
 ],
 isAuth,mainController.postmemberRegistration);
 router.get('/confirmation/:store',isAuth,mainController.getConfirmation);
-// router.get('/findtheStore',authController.getfindtheStore);
-router.get('/storeinfo',isAuth,mainController.getStoreinfo);
+router.get('/findtheStore',mainController.getfindtheStore);
+// router.get('/storeinfo',isAuth,mainController.getStoreinfo);
+router.get('/storeinfo/:id',isAuth,mainController.getStoreinfo);
 router.get('/slots/:store_id',isAuth,mainController.getSlots);
 router.get('/inventory/:store_id',isAuth,mainController.getInventory);
 router.get('/update',isAuth,mainController.getUpdate);
@@ -62,5 +63,11 @@ router.get('/storePrevTrans',isAuth,mainController.getstorePrevTrans);
 router.get('/confrecipt/:order_id',isAuth,mainController.getconfrecipt);
 router.get('/recipt/:order_id',isAuth,mainController.getrecipt);
 router.get('/completetrans/:order_id',isAuth,mainController.getcompletetrans);
+router.post('/getStores/:flag',isAuth,[
+    check('enteredpin')
+    .isNumeric()
+    .isLength({min:6,max:6})
+    .withMessage('Enter valid pincode')
+],mainController.getStores);
 
 module.exports = router;

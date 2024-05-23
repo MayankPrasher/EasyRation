@@ -34,9 +34,9 @@
                     
                     <td class="text-center"><%=order.total%></td>
                     <%if(order.completed){%>
-                        <td class="text-center"><a href="/app/recipt/<%=order._id%>"><button class="btn btn-success">Recipt</button></a></td>
+                        <td class="text-center"><a href="/app/recipt/<%=order._id%>" target="_blank"><button class="btn btn-success">Recipt</button></a></td>
                     <%}else{%>
-                        <td class="text-center"><a href="/app/confrecipt/<%=order._id%>"><button class="btn btn-success">Confirmation</button></a></td>
+                        <td class="text-center"><a href="/app/confrecipt/<%=order._id%>"target="_blank"><button class="btn btn-success">Confirmation</button></a></td>
                     <%}%>
                     
                 </tr>

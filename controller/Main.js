@@ -78,6 +78,11 @@ exports.getmain = (req ,res , next )=> {
   
 };
 exports.getStores = (req , res, next) =>{
+    var flag = undefined;
+    if(req.params.flag){
+        flag = req.params.flag;
+        console.log(flag);
+    }
      const enteredpin = req.body.enteredpin;
      const errors = validationResult(req);
      if(!errors.isEmpty()){
@@ -99,6 +104,7 @@ Store.find({pincode:enteredpin})
             errorMessage:"Invalid Pincode",
             oldInput:{enteredpin:enteredpin},
             validationErrors:errors.array(),
+            flag:flag
         });
     }
     else{
@@ -106,7 +112,8 @@ Store.find({pincode:enteredpin})
             aadhar_name:req.session.user.name,
             aadhar:req.session.user.aadhar,
             stores:stores,
-            isAuth:req.session.isLoggedIn
+            isAuth:req.session.isLoggedIn,
+            flag:flag
         });
     }
     
@@ -151,14 +158,16 @@ exports.getBooking = (req , res, next) =>{
 
 };
 exports.getStoreDash = (req , res, next) =>{
+    const user = req.session.user.usertype;
     const store_name = req.session.user.store_name;
     const fps_id = req.session.user.fps_id;
     const distributor = req.session.user.distributor;
     const address = req.session.user.store_address;
     const tehsil = req.session.user.tehsil;
     const telephone = req.session.user.telephone;
-    res.render('storeinfo',{
-        user:null,
+    console.log(user);
+    res.render('storedash',{
+        user:user,
         store_name:store_name,
         fps_id:fps_id,
         distributor:distributor,
@@ -166,9 +175,6 @@ exports.getStoreDash = (req , res, next) =>{
         tehsil:tehsil,
         telephone:telephone
     })
-    // console.log(user);
-       
-
 };
 exports.getuserRegistration = (req,res,next)=>{
     const store_name = req.session.user.store_name;
@@ -301,30 +307,40 @@ Admin.findOneAndUpdate(
 };
 
 exports.getSlots = (req , res, next) =>{
-    const store_id = req.params.store_id;
-    const update = {
-        $pull: {
-            slots: {
-              $or: [
-                { booked: { $gte: 10 } }, 
-                { active: false }         
-              ]
+    const aadhar = req.session.user.aadhar;
+    User.findOne({aadhar:aadhar})
+    .then(user=>{
+       if(!user){
+        console.log("user not found");
+       }
+       else{
+        if(user.monthlyQuota){
+            res.render('Nobooking',{
+                aadhar_name:req.session.user.name,
+                aadhar:req.session.user.aadhar,
+                oldInput:"",
+                errorMessage:""
+            });
+        }else{
+            const store_id = req.params.store_id;
+            const update = {
+                $pull: {
+                    slots: {
+                      $or: [
+                        { booked: { $gte: 10 } }, 
+                        { active: false }         
+                      ]
+                    }
+                  }
             }
-          }
-    }
-    Store.updateOne({fps_id:store_id},update)
-    .then(
-        ack=>{
-            console.log(ack);
-        }
-    )
-    .catch(
-        err=>{
-            console.log(err);
-        }
-    )
-    Store.findOne({fps_id:store_id})
-    .then(store=>{
+            Store.updateOne({fps_id:store_id},update)
+            .then(
+                ack=>{
+                    console.log(ack);
+                }
+            )
+            Store.findOne({fps_id:store_id})
+        .then(store=>{
         if(store){
           const slots = store.slots;
           return res.render('slots',{
@@ -340,6 +356,17 @@ exports.getSlots = (req , res, next) =>{
             console.log("Store Not Found");
         }
     })
+        }
+       }
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+    .catch(
+        err=>{
+            console.log(err);
+        }
+    )
     .catch(err=>{
         console.log(err);
     })
@@ -538,16 +565,53 @@ exports.getstore = (req,res,next)=>{
 }
 
 exports.getfindtheStore = (req,res,next)=>{
-    if(req){
-        res.render('findtheStore');
-    }
+    const aadhar = req.session.user.aadhar;
+    User.findOne({aadhar:aadhar})
+    .then(user=>{
+       if(!user){
+        console.log("user not found");
+       }
+       else{
+            res.render('findtheStore',{
+                aadhar_name:req.session.user.name,
+                aadhar:req.session.user.aadhar,
+                oldInput:"",
+                errorMessage:""
+            });
+       }
+    })
+    .catch(err=>{
+        console.log(err);
+    })
 }
 
 exports.getStoreinfo = (req,res,next)=>{
+    const user = req.session.user.usertype;
+    const aadhar_name =req.session.user.name;
+    const aadhar = req.session.user.aadhar;
+    const store_id = req.params.id;
+    Store.findOne({'fps_id':store_id})
+    .then(store=>{
+       if(store){
+        res.render('storeinfo',{
+            user:user,
+            aadhar_name:aadhar_name,
+            aadhar:aadhar,
+            store_name:store.store_name,
+            fps_id:store.fps_id,
+            distributor:store.distributor,
+            address:store.address,
+            tehsil:store.tehsil,
+            telephone:store.telephone
+        })
+       }else{
+        console.log("Store not found");
+       }
 
-    if(req){
-        res.render('storeinfo');
-    }
+    })
+    .catch(err=>{
+        console.log(err);
+    })
 }
 exports.completeConfirmation = (req,res,next)=>{
     const store_name = req.body.store_name;
@@ -573,105 +637,105 @@ exports.completeConfirmation = (req,res,next)=>{
             rate:Number(rate[i])
         }
     }
-    const updateQuery = {
-        $inc: {
-          "commodities.$[elem].stock": -Number(unit[0]) 
-        }
-      };
-    const updateBookQuery = {
-        $inc: {
-          "slots.$[elem].booked": 1 
-        }
-      };
-      var bookFilter =[];
-      if(slot==900){
-        bookFilter = [{
-            "elem.slot":900
-          }];
-      }
-      else if(slot==920){
-         bookFilter = [{
-            "elem.slot":920
-          }];
-      }
-      else if(slot==940){
-         bookFilter = [{
-            "elem.slot":940
-          }];
-      }
-      else if(slot==1000){
-         bookFilter = [{
-            "elem.slot":1000
-          }];
-      }
-      else if(slot==1020){
-         bookFilter = [{
-            "elem.slot":1020
-          }];
-      }
-      else if(slot==1040){
-         bookFilter = [{
-            "elem.slot":1040
-          }];
-      }
-      else if(slot==1100){
-         bookFilter = [{
-            "elem.slot":1100
-          }];
-      }
-      else if(slot==1120){
-         bookFilter = [{
-            "elem.slot":1120
-          }];
-      }
-      else if(slot==1140){
-         bookFilter = [{
-            "elem.slot":1140
-          }];
-      }
-      else if(slot==1200){
-         bookFilter = [{
-            "elem.slot":1200
-          }];
-      }
-      else if(slot==1220){
-         bookFilter = [{
-            "elem.slot":1200
-          }];
-      }
-      else if(slot==1240){
-     bookFilter = [{
-            "elem.slot":1200
-          }];
-      }
-      else if(slot==1400){
-         bookFilter = [{
-            "elem.slot":1200
-          }];
-      }
-      else if(slot==1420){
-         bookFilter = [{
-            "elem.slot":1200
-          }];
-      }
-      else if(slot==1440){
-         bookFilter = [{
-            "elem.slot":1200
-          }];
-      }
-      console.log(bookFilter);
-      const riceFilter = [{
-        "elem.item":"Rice"
-      }];
-      const wheatFilter = [{
-        "elem.item":"Wheat"
-      }];
-      const sugarFilter = [{
-        "elem.item":"Sugar"
-      }];
-      const oilFilter = [{
-        "elem.item":"Kerosene"
-      }];
+    // const updateQuery = {
+    //     $inc: {
+    //       "commodities.$[elem].stock": -Number(unit[0]) 
+    //     }
+    //   };
+    // const updateBookQuery = {
+    //     $inc: {
+    //       "slots.$[elem].booked": 1 
+    //     }
+    //   };
+    //   var bookFilter =[];
+    //   if(slot==900){
+    //     bookFilter = [{
+    //         "elem.slot":900
+    //       }];
+    //   }
+    //   else if(slot==920){
+    //      bookFilter = [{
+    //         "elem.slot":920
+    //       }];
+    //   }
+    //   else if(slot==940){
+    //      bookFilter = [{
+    //         "elem.slot":940
+    //       }];
+    //   }
+    //   else if(slot==1000){
+    //      bookFilter = [{
+    //         "elem.slot":1000
+    //       }];
+    //   }
+    //   else if(slot==1020){
+    //      bookFilter = [{
+    //         "elem.slot":1020
+    //       }];
+    //   }
+    //   else if(slot==1040){
+    //      bookFilter = [{
+    //         "elem.slot":1040
+    //       }];
+    //   }
+    //   else if(slot==1100){
+    //      bookFilter = [{
+    //         "elem.slot":1100
+    //       }];
+    //   }
+    //   else if(slot==1120){
+    //      bookFilter = [{
+    //         "elem.slot":1120
+    //       }];
+    //   }
+    //   else if(slot==1140){
+    //      bookFilter = [{
+    //         "elem.slot":1140
+    //       }];
+    //   }
+    //   else if(slot==1200){
+    //      bookFilter = [{
+    //         "elem.slot":1200
+    //       }];
+    //   }
+    //   else if(slot==1220){
+    //      bookFilter = [{
+    //         "elem.slot":1200
+    //       }];
+    //   }
+    //   else if(slot==1240){
+    //  bookFilter = [{
+    //         "elem.slot":1200
+    //       }];
+    //   }
+    //   else if(slot==1400){
+    //      bookFilter = [{
+    //         "elem.slot":1200
+    //       }];
+    //   }
+    //   else if(slot==1420){
+    //      bookFilter = [{
+    //         "elem.slot":1200
+    //       }];
+    //   }
+    //   else if(slot==1440){
+    //      bookFilter = [{
+    //         "elem.slot":1200
+    //       }];
+    //   }
+    //   console.log(bookFilter);
+    //   const riceFilter = [{
+    //     "elem.item":"Rice"
+    //   }];
+    //   const wheatFilter = [{
+    //     "elem.item":"Wheat"
+    //   }];
+    //   const sugarFilter = [{
+    //     "elem.item":"Sugar"
+    //   }];
+    //   const oilFilter = [{
+    //     "elem.item":"Kerosene"
+    //   }];
         // console.log(commodities);
         // console.log(store_id);
         // console.log(aadhar);
@@ -711,39 +775,39 @@ exports.completeConfirmation = (req,res,next)=>{
             // axios
             // .request(options)
                 // .then(function (response) {
-                   Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:riceFilter})
-                   .then(
-                    ack=>{
-                        Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:wheatFilter})
-                        .then(
-                            ack2=>{
-                                Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:sugarFilter})
-                                .then(
-                                    ack3=>{
-                                        Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:oilFilter})
-                                       .then(
-                                        Store.updateOne({fps_id:store_id},updateBookQuery,{arrayFilters:bookFilter})
-                                        .then(
-                                            ack5=>{
-                                                User.updateOne({aadhar:req.session.user.aadhar},{$set:{monthlyQuota:true}})
-                                                .then(ack7=>{
-                                                    console.log(ack7)
-                                                })
-                                                .catch(err=>{
-                                                    console.log(err);
-                                                })
-                                            }
-                                        )
-                                       )
-                                    }
-                                )
-                            }
-                        )
-                        .catch(err=>{
-                            console.log(err);
-                        })
-                    }
-                   )
+                //    Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:riceFilter})
+                //    .then(
+                //     ack=>{
+                //         Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:wheatFilter})
+                //         .then(
+                //             ack2=>{
+                //                 Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:sugarFilter})
+                //                 .then(
+                //                     ack3=>{
+                //                         Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:oilFilter})
+                //                        .then(
+                //                         Store.updateOne({fps_id:store_id},updateBookQuery,{arrayFilters:bookFilter})
+                //                         .then(
+                //                             ack5=>{
+                //                                 User.updateOne({aadhar:req.session.user.aadhar},{$set:{monthlyQuota:true}})
+                //                                 .then(ack7=>{
+                //                                     console.log(ack7)
+                //                                 })
+                //                                 .catch(err=>{
+                //                                     console.log(err);
+                //                                 })
+                //                             }
+                //                         )
+                //                        )
+                //                     }
+                //                 )
+                //             }
+                //         )
+                //         .catch(err=>{
+                //             console.log(err);
+                //         })
+                //     }
+                //    )
                 const order = new Order({
                     aadhar : aadhar,
                     store_id:store_id,
@@ -751,7 +815,10 @@ exports.completeConfirmation = (req,res,next)=>{
                     slot:slot,
                     date:date,
                     commodities:commodities,
-                    total:total
+                    total:total,
+                    unit:unit,
+                    price:price,
+                    rate:rate
                 });
                 order.save();
                 res.redirect('http://localhost:4001/app/userPreviousTrans');
@@ -825,29 +892,127 @@ exports.getconfrecipt = (req,res,next)=>{
         if(!order){
             console.log('No order found');
         }
-        if(Number(order.aadhar)!== Number(req.session.user.aadhar)){
-           console.log("Not authorized");
+        if(Number(order.aadhar)== Number(req.session.user.aadhar)||Number(order.store_id)==Number(req.session.user.fps_id)){
+           console.log("authorized");
         }
-        const confreciptName = 'confrecipt-'+order_id+'.pdf';
-        const confreciptPath = path.join('user','confrecipt',confreciptName);
+        else{
+            console.log("Not authorized");
+        }
+        Store.findOne({fps_id:order.store_id})
+        .then(store=>{
+            if(store){
+                const store_address = store.store_address;
+                const store_name = store.store_name;
+                const pincode = store.pincode;
+                const tehsil = store.tehsil;
+        Admin.findOne({'aadhar.aadhar_Id':order.aadhar})
+        .then(
+            user=>{
+                const user_name = user.aadhar.name;
+                const ration_id = user.ration_details.user_Id;
+                const user_mobile = user.aadhar.mobile;
+       
+        const confreciptName = 'invoice-'+order_id+'.pdf';
+        const confreciptPath = path.join('user','invoice',confreciptName);
         const pdfDoc = new PDFDocument();
         res.setHeader('Content-Type','application/pdf');
         res.setHeader('Content-Disposition','inline; filename="'+confreciptName+'"');
         pdfDoc.pipe(fs.createWriteStream(confreciptPath));
         pdfDoc.pipe(res);
-        pdfDoc.font('public/gilroy/Gilroy-Heavy.ttf').fontSize(30).text('EasyRation.',{
+        pdfDoc.font('public/gilroy/Gilroy-Heavy.ttf').fontSize(30).fillColor('red').text('EasyRation.',{
             underline:false,
             align:'center',
-        });
-        pdfDoc.font('public/gilroy/Gilroy-Bold.ttf').fontSize(21).text('Confirmation-Recipt',{
+        }).moveDown(0.5);
+        pdfDoc.font('public/gilroy/Gilroy-Bold.ttf').fontSize(21).text('Confirmation Recipt',{
             underline:true,
             align:'center',
         });
         pdfDoc.text('--------------------------------------------',{
             align:'center'
         });
+        pdfDoc.fontSize(15).text(`Store Id: ${order.store_id}`, 400, 130,{
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`confirmation Id: ${order._id}`, 50, 200,{
+            align:'center'
+        })
+        pdfDoc.fontSize(13).text(`Store name: ${store_name}`, 50, 230,{
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Store address: ${store_address}`, 50, 260,{
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Tehsil: ${tehsil}`, 50, 290,{
+            align:'right'
+        })
+        pdfDoc.text(`Beneficiary Name: ${user_name}`, 50, 230,{
+            align:'left'
+        })
+        pdfDoc.text(`Beneficiary Id: ${ration_id}`, 50, 260,{
+            align:'left'
+        })
+        pdfDoc.text(`Mobile number: ${user_mobile}`, 50, 290,{
+            align:'left'
+        })
+		// .text(`Invoice Date: ${order.date}`, 50, 230)
+		pdfDoc.fontSize(15).text(`Slot: `+`${order.slot}`.slice(0,2)+`:`+`${order.slot}`.slice(2), 50, 130)
+        pdfDoc.text(`commodity`, 105, 340,{
+            // align:'left'
+        })
+        pdfDoc.text(`unit`, 250, 340,{
+            // align:'center'
+        })
+        pdfDoc.text(`rate`, 350, 340,{
+            // align:'center'
+        })
+        pdfDoc.text(`price`, 450, 340,{
+            // align:'center'
+        })
+        for(var i = 1 ; i<=order.commodities.length;i++){
+            pdfDoc.text(`${order.commodities[i-1].commodity}`,100, 360+i*50,{
+                
+            })
+            pdfDoc.text(`${order.commodities[i-1].unit}`,260, 360+i*50,{
+                lineBreak:true
+            })
+            pdfDoc.text(`${order.commodities[i-1].rate}`,360, 360+i*50,{
+                lineBreak:true
+            })
+            pdfDoc.text(`${order.commodities[i-1].price}`, 460, 360+i*50,{
+                lineBreak:true
+            })
+        }
+        pdfDoc.text('------------------------------------------------------------------',50,580,{
+           align:'center',
+           width:500
+        });
+        pdfDoc.text(`Grand Total :${order.total}`,370,620,{
+           width:500
+        });
+        pdfDoc.fontSize(14).text(`User should reach store in alloted slot otherwise this confirmation is get expired.`,100,655,{
+            align:'left',
+        });
+        pdfDoc.fontSize(12).text(`Generated on:${order.date}`,100,695,{
+           width:500
+        });
+		// pdfDoc.text(order.fps_id, 300, 200)
+		// // .text(shipping.address, 300, 215)
+		// // .text(
+		// // 	`${shipping.city}, ${shipping.state}, ${shipping.country}`,
+		// // 	300,
+		// // 	130,
+		// // )
+		// .moveDown();
         pdfDoc.end();
+    }
+)
+.catch(err=>{
+    console.log(err);
+})
+    }
+    
     })
+})
     .catch(err=>{
         console.log(err);
     })
@@ -865,6 +1030,20 @@ exports.getrecipt = (req,res,next)=>{
         else{
             console.log("Not authorized");
         }
+        Store.findOne({fps_id:order.store_id})
+        .then(store=>{
+            if(store){
+                const store_address = store.store_address;
+                const store_name = store.store_name;
+                const pincode = store.pincode;
+                const tehsil = store.tehsil;
+        Admin.findOne({'aadhar.aadhar_Id':order.aadhar})
+        .then(
+            user=>{
+                const user_name = user.aadhar.name;
+                const ration_id = user.ration_details.user_Id;
+                const user_mobile = user.aadhar.mobile;
+       
         const confreciptName = 'invoice-'+order_id+'.pdf';
         const confreciptPath = path.join('user','invoice',confreciptName);
         const pdfDoc = new PDFDocument();
@@ -872,33 +1051,278 @@ exports.getrecipt = (req,res,next)=>{
         res.setHeader('Content-Disposition','inline; filename="'+confreciptName+'"');
         pdfDoc.pipe(fs.createWriteStream(confreciptPath));
         pdfDoc.pipe(res);
-        pdfDoc.font('public/gilroy/Gilroy-Heavy.ttf').fontSize(30).text('EasyRation.',{
+        pdfDoc.font('public/gilroy/Gilroy-Heavy.ttf').fontSize(30).fillColor('green').text('EasyRation.',{
             underline:false,
             align:'center',
-        });
+        }).moveDown(0.5);
         pdfDoc.font('public/gilroy/Gilroy-Bold.ttf').fontSize(21).text('Invoice',{
             underline:true,
             align:'center',
         });
+       
         pdfDoc.text('--------------------------------------------',{
             align:'center'
         });
+        pdfDoc.fontSize(15).text(`Store Id: ${order.store_id}`, 400, 130,{
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Invoice Id: ${order._id}`, 50, 200,{
+            align:'center'
+        })
+        pdfDoc.fontSize(13).text(`Store name: ${store_name}`, 50, 230,{
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Store address: ${store_address}`, 50, 260,{
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Tehsil: ${tehsil}`, 50, 290,{
+            align:'right'
+        })
+        pdfDoc.text(`Beneficiary Name: ${user_name}`, 50, 230,{
+            align:'left'
+        })
+        pdfDoc.text(`Beneficiary Id: ${ration_id}`, 50, 260,{
+            align:'left'
+        })
+        pdfDoc.text(`Mobile number: ${user_mobile}`, 50, 290,{
+            align:'left'
+        })
+		// .text(`Invoice Date: ${order.date}`, 50, 230)
+        pdfDoc.fontSize(15).text(`Slot: `+`${order.slot}`.slice(0,2)+`:`+`${order.slot}`.slice(2), 50, 130)
+        pdfDoc.text(`commodity`, 105, 340,{
+            // align:'left'
+        })
+        pdfDoc.text(`unit`, 250, 340,{
+            // align:'center'
+        })
+        pdfDoc.text(`rate`, 350, 340,{
+            // align:'center'
+        })
+        pdfDoc.text(`price`, 450, 340,{
+            // align:'center'
+        })
+        for(var i = 1 ; i<=order.commodities.length;i++){
+            pdfDoc.text(`${order.commodities[i-1].commodity}`,100, 360+i*50,{
+                
+            })
+            pdfDoc.text(`${order.commodities[i-1].unit}`,260, 360+i*50,{
+                lineBreak:true
+            })
+            pdfDoc.text(`${order.commodities[i-1].rate}`,360, 360+i*50,{
+                lineBreak:true
+            })
+            pdfDoc.text(`${order.commodities[i-1].price}`, 460, 360+i*50,{
+                lineBreak:true
+            })
+        }
+        pdfDoc.text('------------------------------------------------------------------',50,580,{
+           align:'center',
+           width:500
+        });
+        pdfDoc.text(`Grand Total :${order.total}`,370,620,{
+           width:500
+        });
+        pdfDoc.text(`FPS Stamp and signature`,100,670,{
+           width:500
+        });
+        pdfDoc.fontSize(12).text(`Generated on:${order.date}`,100,695,{
+           width:500
+        });
+		// pdfDoc.text(order.fps_id, 300, 200)
+		// // .text(shipping.address, 300, 215)
+		// // .text(
+		// // 	`${shipping.city}, ${shipping.state}, ${shipping.country}`,
+		// // 	300,
+		// // 	130,
+		// // )
+		// .moveDown();
         pdfDoc.end();
+    }
+)
+.catch(err=>{
+    console.log(err);
+})
+    }
+    
     })
+})
     .catch(err=>{
         console.log(err);
     })
 }
 exports.getcompletetrans = (req,res,next)=>{
 const order_id = req.params.order_id;
-
-Order.findByIdAndUpdate(order_id,{completed:true},{new:true})
-.then(updatedDocument=>{
-    console.log("Done!!")
-    res.redirect('/app/upcomingStoretrans');
+Order.findOne({_id:order_id})
+.then(order=>{
+    if(order){
+        // console.log(order);
+        const slot = Number(order.slot);
+        const commodity = order.commodities;
+        // console.log(commodity,slot);
+        const aadhar = order.aadhar;
+        const date = order.date;
+        const total = Number(order.total);
+        const store_id = order.store_id;
+        const unit = order.unit;
+        const price = order.price;
+        const rate = order.rate;
+        const commodities = [];
+        for(let i = 0 ; i<commodity.length;i++){
+            commodities[i]={
+                commodity:commodity[i],
+                unit:Number(unit[i]),
+                price:Number(price[i]),
+                rate:Number(rate[i])
+            }
+        }
+        const updateQuery = {
+            $inc: {
+              "commodities.$[elem].stock": -Number(unit[0]) 
+            }
+          };
+        const updateBookQuery = {
+            $inc: {
+              "slots.$[elem].booked": 1 
+            }
+          };
+          var bookFilter =[];
+          if(slot==900){
+            bookFilter = [{
+                "elem.slot":900
+              }];
+          }
+          else if(slot==920){
+             bookFilter = [{
+                "elem.slot":920
+              }];
+          }
+          else if(slot==940){
+             bookFilter = [{
+                "elem.slot":940
+              }];
+          }
+          else if(slot==1000){
+             bookFilter = [{
+                "elem.slot":1000
+              }];
+          }
+          else if(slot==1020){
+             bookFilter = [{
+                "elem.slot":1020
+              }];
+          }
+          else if(slot==1040){
+             bookFilter = [{
+                "elem.slot":1040
+              }];
+          }
+          else if(slot==1100){
+             bookFilter = [{
+                "elem.slot":1100
+              }];
+          }
+          else if(slot==1120){
+             bookFilter = [{
+                "elem.slot":1120
+              }];
+          }
+          else if(slot==1140){
+             bookFilter = [{
+                "elem.slot":1140
+              }];
+          }
+          else if(slot==1200){
+             bookFilter = [{
+                "elem.slot":1200
+              }];
+          }
+          else if(slot==1220){
+             bookFilter = [{
+                "elem.slot":1200
+              }];
+          }
+          else if(slot==1240){
+         bookFilter = [{
+                "elem.slot":1200
+              }];
+          }
+          else if(slot==1400){
+             bookFilter = [{
+                "elem.slot":1200
+              }];
+          }
+          else if(slot==1420){
+             bookFilter = [{
+                "elem.slot":1200
+              }];
+          }
+          else if(slot==1440){
+             bookFilter = [{
+                "elem.slot":1200
+              }];
+          }
+          console.log(bookFilter);
+          const riceFilter = [{
+            "elem.item":"Rice"
+          }];
+          const wheatFilter = [{
+            "elem.item":"Wheat"
+          }];
+          const sugarFilter = [{
+            "elem.item":"Sugar"
+          }];
+          const oilFilter = [{
+            "elem.item":"Kerosene"
+          }];
+          Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:riceFilter})
+                   .then(
+                    ack=>{
+                        Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:wheatFilter})
+                        .then(
+                            ack2=>{
+                                Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:sugarFilter})
+                                .then(
+                                    ack3=>{
+                                        Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:oilFilter})
+                                       .then(
+                                        Store.updateOne({fps_id:store_id},updateBookQuery,{arrayFilters:bookFilter})
+                                        .then(
+                                            ack5=>{
+                                                User.updateOne({aadhar:order.aadhar},{$set:{monthlyQuota:true}})
+                                                .then(ack7=>{
+                                                    console.log(ack7)
+                                                })
+                                                .catch(err=>{
+                                                    console.log(err);
+                                                })
+                                            }
+                                        )
+                                       )
+                                    }
+                                )
+                            }
+                        )
+                        .catch(err=>{
+                            console.log(err);
+                        })
+                        Order.findByIdAndUpdate(order_id,{completed:true},{new:true})
+                        .then(updatedDocument=>{
+                            console.log("Done!!")
+                            res.redirect('/app/upcomingStoretrans');
+                         })  
+                        .catch(err=>{
+                            console.log(err);
+                        })
+                    }
+                )
+                .catch(err=>{
+                    console.log(err);
+                })
+                
+                
+    }
 })
 .catch(err=>{
     console.log(err);
 })
-
 }

@@ -1,4 +1,4 @@
-// const user = require('../models/user');
+
 const User = require('../models/user');
 const Store = require('../models/store');
 const Admin = require('../models/central');

@@ -79,7 +79,10 @@ const storeSchema = new Schema({
             }
 
         }
-    ]
-
+    ],
+    usertype:{
+        type:String,
+        required:true
+    }
 });
 module.exports = mongoose.model('Store',storeSchema);

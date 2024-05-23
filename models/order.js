@@ -48,6 +48,25 @@ commodities:[
 total:{
 type:Number,
 required:true
-}
+},
+unit:[
+    {
+    type:Number,
+    required:true
+    }
+] ,
+rate:[
+    {
+    type:Number,
+    required:true
+    }
+] ,
+price:[
+    {
+    type:Number,
+    required:true
+    }
+] 
+
 });
 module.exports = moongoose.model('order',orderSchema);

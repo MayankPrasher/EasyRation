@@ -14,7 +14,7 @@ var mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
 const user = require('../models/user');
 const central = require('../models/central');
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
 const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
@@ -25,9 +25,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.getmain = (req ,res , next )=> {
-    console.log(req);
     const aadhar = req.session.user.aadhar;
-    // console.log(aadhar);
     Admin.findOne({'aadhar.aadhar_Id':aadhar})
     .then(user=>{
         if(user){
@@ -38,12 +36,128 @@ exports.getmain = (req ,res , next )=> {
           const card_type = user.ration_details.card_type;
           const members = user.ration_details.members;
           const members_qty = user.ration_details.member_quantity;
+    //       const store = new Store({
+    //         fps_id : 7525 ,
+    //         distributor:'SARASWATI DEVI',
+    //         store_name:'M/S SARASWATI STORE',
+    //         store_address:'88 - A AMRIT PURI GARHI NEW DELHI KALKAJI',
+    //         pincode:110019,
+    //         tehsil:'Kalkaji',
+    //        slots: [
+    //     {
+    //       slot: 900,
+    //       booked: 0,
+    //       active: true
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 920
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 940
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1000
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1020
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1040
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 3,
+    //       slot: 1100
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1120
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1140
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1200
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1220
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1240
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1400
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1420
+    //     },
+    //     {
+    //       active: true,
+    //       booked: 0,
+    //       slot: 1440
+    //     }
+    //   ],
+    //  telephone:9213298772,
+    //  FSO_area:1,
+    //   store_email: "saras@gmail.com",
+    //   otp: "9g4z6h",
+    //   commodities: [
+    //     {
+    //       commodity: "Rice",
+    //       rate: 20,
+    //       item: "Rice",
+    //       stock: 266
+    //     },
+    //     {
+    //       commodity: "Wheat",
+    //       rate: 30,
+    //       item: "Wheat",
+    //       stock: 1907
+    //     },
+    //     {
+    //       commodity: "Sugar",
+    //       rate: 24,
+    //       item: "Sugar",
+    //       stock: 3267
+    //     },
+    //     {
+    //       commodity: "Kerosene",
+    //       rate: 15,
+    //       item: "Kerosene",
+    //       stock: 4871
+    //     }
+    //   ],
+    //   usertype: "store"
+    //     });
+    //       store.save();
           Store.findOne({fps_id:store_id})
           .then(store=>{
             if(store){
                 const store_name = store.store_name;
                 const store_fso = store.FSO_area;
-
                 return res.render('rationcard',{
                     aadhar:req.session.user.aadhar,
                     ration_card_id : ration_card_id,
@@ -64,7 +178,6 @@ exports.getmain = (req ,res , next )=> {
           .catch(err=>{
             console.log(err);
           })
-        //   console.log(store_id);
         }
         else{
             console.log("User not found");
@@ -121,9 +234,7 @@ Store.find({pincode:enteredpin})
 .catch(err=>{
     console.log(err);
 });
-    // if(req){
-    //     res.render('chooseStore');
-    // }
+ 
 };
 
 exports.getBooking = (req , res, next) =>{
@@ -934,7 +1045,10 @@ exports.getconfrecipt = (req,res,next)=>{
             align:'right'
         })
         pdfDoc.fontSize(13).text(`confirmation Id: ${order._id}`, 50, 200,{
-            align:'center'
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Aadhar: ${order.aadhar}`, 50, 200,{
+            align:'left'
         })
         pdfDoc.fontSize(13).text(`Store name: ${store_name}`, 50, 230,{
             align:'right'
@@ -1066,8 +1180,12 @@ exports.getrecipt = (req,res,next)=>{
         pdfDoc.fontSize(15).text(`Store Id: ${order.store_id}`, 400, 130,{
             align:'right'
         })
+        
         pdfDoc.fontSize(13).text(`Invoice Id: ${order._id}`, 50, 200,{
-            align:'center'
+            align:'right'
+        })
+        pdfDoc.fontSize(13).text(`Aadhar: ${order.aadhar}`, 50, 200,{
+            align:'left'
         })
         pdfDoc.fontSize(13).text(`Store name: ${store_name}`, 50, 230,{
             align:'right'

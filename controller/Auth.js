@@ -2,6 +2,7 @@
 const User = require('../models/user');
 const Store = require('../models/store');
 const Admin = require('../models/central');
+
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
@@ -11,18 +12,11 @@ const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'rosario.torphy@ethereal.email',
-        pass: '6qhnCSKuejbqGUX2Rc'
+        user: 'hannah.schneider39@ethereal.email',
+        pass: 'UmXxGPDsm7fFZWZuER'
     }
 });
 exports.getAuth = (req ,res , next )=> {
-    // console.log("hi"); 
-    // let message = req.flash('error');
-    //  if(message.length>0){
-    //      message = message[0];
-    //  }else{
-    //      message = null;
-    //  }
     res.clearCookie('connect.sid').render('auth',{
         errorMessage:'',
         oldInput :{email:'',password:'',confirmPassword:''},
@@ -46,9 +40,6 @@ exports.postAuthlogin = (req ,res , next )=> {
     User.findOne({email:loginemail})
     .then(flag=>{
         if(!flag){
-        // req.flash('error','Invalid email or password.');
-        // console.log("Invalid Email");
-        // res.redirect('/');
         return res.status(422).render('auth',{
             errorMessage:"Invalid Email",
             oldInput:{loginemail:loginemail,loginpassword:loginpassword},
@@ -62,7 +53,7 @@ exports.postAuthlogin = (req ,res , next )=> {
             
                 req.session.isLoggedIn = true;
                 req.session.user = flag;
-                console.log("User is authentic");
+                // console.log("User is authentic");
                 return res.redirect('http://localhost:4001/app/main');
             }
             else{
@@ -82,15 +73,7 @@ exports.postAuthlogin = (req ,res , next )=> {
     console.log(err);
    })
    
-    // if(req){
-    //     console.log(req.body.loginemail); 
-    //     console.log(req.body.loginpassword); 
-    //     res.render('auth',{
-    //         errorMessage:"",
-    //         oldInput :{email:'',password:'',confirmPassword:''},
-    //         validationErrors:[],
-    //     });
-    // }
+ 
     
 };
 exports.postAuthsignup = (req ,res , next )=> {
@@ -136,7 +119,6 @@ User.findOne({aadhar:aadhar})
         if(id){
             console.log(id);
             user.save();
-            res.redirect('/');
             console.log('User Created');
              transporter.sendMail({
                 to :email,
@@ -299,4 +281,5 @@ exports.postLogout = (req,res,next)=>{
           res.redirect('/')
         }
       })
+    
   }

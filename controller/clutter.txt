@@ -5,11 +5,239 @@ const store = new Store({
         store_address:'BAKOLI,DELHI,NARELA',
         pincode:110036,
         tehsil:'Narela',
-        slots:[{slot:"9:00"},{slot:"9:20"},{slot:"9:40"},{slot:"10:00"}],
-        telephone:9999999999
+       slots: [
+    {
+      slot: 900,
+      booked: 0,
+      active: true
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 920
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 940
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1000
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1020
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1040
+    },
+    {
+      active: true,
+      booked: 3,
+      slot: 1100
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1120
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1140
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1200
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1220
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1240
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1400
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1420
+    },
+    {
+      active: true,
+      booked: 0,
+      slot: 1440
+    }
+  ],
+        telephone:9999999999,
+        FSO_area: 75,
+  store_email: "c@gmail.com",
+  otp: "9g4z6h",
+  commodities: [
+    {
+      commodity: "Rice",
+      rate: 20,
+      item: "Rice",
+      stock: 266
+    },
+    {
+      commodity: "Wheat",
+      rate: 30,
+      item: "Wheat",
+      stock: 1907
+    },
+    {
+      commodity: "Sugar",
+      rate: 24,
+      item: "Sugar",
+      stock: 3267
+    },
+    {
+      commodity: "Kerosene",
+      rate: 15,
+      item: "Kerosene",
+      stock: 4871
+    }
+  ],
+  usertype: "store"
     });
       store.save();
-
+      {
+  "_id": {
+    "$oid": "65fdcb5360f8141b6aded588"
+  },
+  "fps_id": 3708,
+  "distributor": "M/S CHANDARAPATI",
+  "store_name": "M/S CHANDARAPATI",
+  "store_address": "BAKOLI,DELHI,NARELA",
+  "pincode": 110036,
+  "tehsil": "Narela",
+  "slots": [
+    {
+      "slot": 900,
+      "_id": {
+        "$oid": "65fdcb5360f8141b6aded589"
+      },
+      "booked": 0,
+      "active": true
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 920
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 940
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1000
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1020
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1040
+    },
+    {
+      "active": true,
+      "booked": 3,
+      "slot": 1100
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1120
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1140
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1200
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1220
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1240
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1400
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1420
+    },
+    {
+      "active": true,
+      "booked": 0,
+      "slot": 1440
+    }
+  ],
+  "telephone": 9999999999,
+  "__v": 0,
+  "FSO_area": 75,
+  "store_email": "c@gmail.com",
+  "otp": "9g4z6h",
+  "commodities": [
+    {
+      "commodity": "Rice",
+      "rate": 20,
+      "item": "Rice",
+      "stock": 266
+    },
+    {
+      "commodity": "Wheat",
+      "rate": 30,
+      "item": "Wheat",
+      "stock": 1907
+    },
+    {
+      "commodity": "Sugar",
+      "rate": 24,
+      "item": "Sugar",
+      "stock": 3267
+    },
+    {
+      "commodity": "Kerosene",
+      "rate": 15,
+      "item": "Kerosene",
+      "stock": 4871
+    }
+  ],
+  "usertype": "store"
+}
        const admin = new Admin({
         aadhar:{
             aadhar_Id:121212121212,

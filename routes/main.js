@@ -48,7 +48,6 @@ router.post('/memberRegistration',
 isAuth,mainController.postmemberRegistration);
 router.get('/confirmation/:store',isAuth,mainController.getConfirmation);
 router.get('/findtheStore',mainController.getfindtheStore);
-// router.get('/storeinfo',isAuth,mainController.getStoreinfo);
 router.get('/storeinfo/:id',isAuth,mainController.getStoreinfo);
 router.get('/slots/:store_id',isAuth,mainController.getSlots);
 router.get('/inventory/:store_id',isAuth,mainController.getInventory);

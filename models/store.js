@@ -61,7 +61,7 @@ const storeSchema = new Schema({
     },
     commodities:[
         {
-            commoditiy:{
+            commodity:{
                 type:String,
                 required:true
             },

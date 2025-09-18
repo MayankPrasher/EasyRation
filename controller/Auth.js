@@ -54,7 +54,7 @@ exports.postAuthlogin = (req ,res , next )=> {
                 req.session.isLoggedIn = true;
                 req.session.user = flag;
                 // console.log("User is authentic");
-                return res.redirect('http://localhost:4001/app/main');
+                return res.redirect('https://easy-ration.onrender.com/app/main');
             }
             else{
                 return res.status(422).render('auth',{

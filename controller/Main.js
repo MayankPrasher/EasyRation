@@ -932,7 +932,7 @@ exports.completeConfirmation = (req,res,next)=>{
                     rate:rate
                 });
                 order.save();
-                res.redirect('http://localhost:4001/app/userPreviousTrans');
+                res.redirect('https://easy-ration.onrender.com/app/userPreviousTrans');
                 // return response.data;
             // })
         //     .then(result=>{

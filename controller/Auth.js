@@ -189,7 +189,7 @@ exports.postStorelogin = (req,res,next)=>{
                 store=>{
                     if(store){
                     //  const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false , });
-                    const otp = 1234;
+                    const otp = "abc" ;
                      Store.updateOne({fps_id:entered_fps_id},{$set:{otp:otp}})
                      .then(flag=>{
                         if(flag){

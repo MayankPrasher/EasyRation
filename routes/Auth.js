@@ -34,7 +34,7 @@ router.post('/authStorelogin',[
 router.get('/otp/:id',authController.getOtp);
 router.post('/postOtp/:id',[
     check('entered_otp')
-    .isLength({min:6,max:6})
+    .isLength({min:3,max:3})
     .withMessage('Enter valid otp')
 ],authController.postOtp);
 // router.get('/main',authController.getmain);

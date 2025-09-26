@@ -1,0 +1,22 @@
+<%-include('./header.ejs')%>
+<div class="storeinfo-container">
+<div class="storeinfo-card ">
+    <div class="storeinfo-card-header text-center">
+    Shop Information
+    </div>
+    <div class="storeinfo-card-content">
+     <div class="info-profile-photo    border me-4">
+     </div>
+     <center class="mb-3"><b><%=store_name%></b></center>
+     <span><b>FPS Id :</b><%=fps_id%></span><br>
+     <span><b>Distributor :</b> <%=distributor%></span><br>
+     <span><b>Address :</b> <%=address%></span><br>
+     <span><b>Tehsil : </b><%=tehsil%></span><br>
+     <span><b>Telephone No. : </b><%=telephone%></span>
+     <center><a href="/app/slots/<%=fps_id%>"><button class="btn btn-success">Book your Slot</button></a></center>
+    </div>
+    <div class="storeinfo-card-footer">
+    </div>
+</div>
+</div>
+<!-- <%- include('./footer.ejs') %> -->

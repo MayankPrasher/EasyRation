@@ -1,0 +1,25 @@
+<%- include('./store-header.ejs') %>
+<div class="storeinfo-container">
+    <div class="storeinfo-card ">
+        <div class="storeinfo-card-header text-center">
+        Update Stock
+        </div>
+        <div class="storeinfo-card-content stock-card">
+        <form style="width: 100%; height: 100%;" action="/app/update" method="post" class="text-center">
+            <label class="mt-2"><h4><%=item_name%></h4></label><br>
+            <label class="mt-2">Stock Remaining</label>
+            <input type="number" name="updatedstock" class="form-control mt-2" value="<%= stock %>" min="0">
+            <label class="mt-2">Rate(rupees/kg or l)</label>
+            <input type="number" name="updatedrate" class="form-control mt-2" value="<%= rate %>" min="0">
+            <input type="hidden" name="item" class="form-control mt-2" value="<%= item %>">
+            <button class="btn btn-success mt-4" type="submit">Submit</button>
+        </form>
+        </div>
+        <div class="storeinfo-card-footer">
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

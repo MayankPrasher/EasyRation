@@ -1,0 +1,77 @@
+</div>
+</div>
+</body>
+<script>
+    let x = true;
+function closeBtn(){
+    if(x){
+         x = false;
+        document.getElementById('sidebar').style.display = "none";
+        document.getElementById('icon-right').style.display = "block";
+        document.getElementById('icon-close').style.display = "none";  
+    }
+    else{
+        x = true;
+        document.getElementById('sidebar').style.display = "flex";
+        document.getElementById('icon-right').style.display = "none";
+        document.getElementById('icon-close').style.display = "block";
+    }
+   
+}
+    var i = 0;
+    var txt = 'Enter your Pincode'; 
+    var speed = 50; 
+
+    function typing() {
+    if (i < txt.length) {
+    document.getElementById("pin-heading").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typing, speed);
+  }
+}
+function getTable(){
+    var j = 0;
+     var text = 'Choose Your Store'; 
+     var speed2 = 50; 
+
+    function typingr() {
+    if (j < text.length) {
+    document.getElementById("pin-heading-back").innerHTML += txt.charAt(j);
+    i++;
+    setTimeout(typingr, speed2);
+  }
+}
+    //  document.getElementById('pin-card-front').style.display = "none";
+    //  document.getElementById('pin-card-back').style.display = "flex";
+    //  document.getElementById('pin-card-header').style.display = "none";
+    //  document.getElementById('pin-card-header-back').style.display = "block";
+    //  document.getElementById("pin-heading").innerHTML="";
+    //  typingr();
+}
+function gobacktopin(){
+    var i = 0;
+    var txt = 'Enter your Pincode'; 
+    var speed = 50; 
+
+    function typingk() {
+    if (i < txt.length) {
+    document.getElementById("pin-heading").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typingk, speed);
+  }
+}
+    document.getElementById('pin-card-front').style.display = "flex";
+     document.getElementById('pin-card-back').style.display = "none";
+     document.getElementById('pin-card-header').style.display = "block";
+     document.getElementById('pin-card-header-back').style.display = "none";
+     document.getElementById("pin-heading-back").innerHTML="";
+     typingk();
+}
+
+const getStore = ()=>{
+    document.getElementById('find-card-table').style.display = "flex";
+    document.getElementById('find-card-content').style.borderRadius = "0px";
+}
+
+</script>
+</html>

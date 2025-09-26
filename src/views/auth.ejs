@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/css/main.css" rel="stylesheet">
+    <link href="/css/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid hi text-center">
+        <span>EasyRation.</span>
+        <div class="auth-card">
+            <div class="tab-btn-container">
+                <div class="tab-btn btn btn-primary" id="btnTab1" onclick="tabChange('tab1')">Login</div>
+                <div class="tab-btn btn btn-success" onclick="tabChange('tab2')" id="btnTab2">Sign Up</div>
+            </div>
+            <div class="tab-container">
+              <% if(errorMessage){ 
+                %>
+                <span class="user-message user-message--error"><%= errorMessage %></span>
+                <%}%>
+              <div class="tab1" id="tab1">
+                <form action="/authLogin" method="post">
+                    <div class="mb-3 mt-4">
+                        <input type="email" class="form-control" name="loginemail" placeholder="Enter your Email" value="<%= oldInput.loginemail%>">
+                      </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="loginpassword" placeholder="Enter your password" value="<%= oldInput.loginpassword%>">
+                      </div>
+                      <a href="store-login" style="color: white !important;">FPS Owner?</a><br><br>
+                      <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+              </div>
+              <div class="tab2" id="tab2">
+                <form action="/authSignup" method="post">
+                    <div class="mt-4 mb-3">
+                        <input type="number" class="form-control" name="aadhar" placeholder="Enter Aadhar Number"
+                        value="<%= oldInput.aadhar%>">
+                      </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="username" placeholder="Enter your Name (as per aadhar)"
+                        value="<%= oldInput.name%>">
+                      </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="Enter your Email"
+                        value="<%= oldInput.email %>">
+                      </div>
+                      <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+              </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function tabChange(id){
+        if(id==='tab1'){
+          document.getElementById('tab2').style.display="none";
+          document.getElementById('tab1').style.display="block";
+        }
+         if(id==='tab2'){
+            document.getElementById('tab2').style.display="block";
+            document.getElementById('tab1').style.display="none";
+        }
+    }
+</script>
+</html>

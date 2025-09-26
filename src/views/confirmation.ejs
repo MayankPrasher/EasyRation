@@ -1,0 +1,91 @@
+<%- include('./header.ejs') %>
+<div class="confirm-container">
+       <div class="confirmation-card">
+        <div class="confirmation-card-header text-center">
+        Confirmation 
+        </div>
+        <div class="confirmation-card-content">
+            <form action="/app/confirm" method="POST">
+        <table class="mt-3">
+            <tr class="text-center mt-1" style="width: 100%;">
+                <input type="hidden" name="store_id" value="<%=store_id%>">
+                <input type="hidden" name="store_name" value="<%=store.store_name%>">
+                <td style="width: 50%;"><span><b>FPS NAME :   </b></span><%=store.store_name%></td>
+                <input type="hidden" name="slot" value="<%=slot%>">
+                <td style="width: 50%;"><span><b>Slot :  </b></span>
+                    <% if(slot== 900){%>
+                        9:00
+                    <%}else if(slot== 920){%>
+                        9:20
+                    <%}else if(slot== 940){%>
+                        9:40
+                    <%}else if(slot== 1000){%>
+                        10:00
+                    <%}else if(slot== 1020){%>  
+                        10:20
+                     <%}else if(slot== 1040){%>  
+                        10:40
+                     <%}else if(slot== 1100){%>    
+                         11:00
+                    <%}else if(slot== 1120){%>  
+                        11:20
+                    <%}else if(slot== 1140){%>  
+                        11:40
+                    <%}else if(slot== 1200){%>   
+                        12:00
+                    <%}else if(slot== 1220){%> 
+                        12:20   
+                    <%}else if(slot== 1240){%>  
+                        12:40 
+                    <%}else if(slot== 1400){%>    
+                        2:00
+                    <%}else if(slot== 1420){%> 
+                        2:20
+                    <%}else if(slot== 1440){%>
+                        2:40 
+                    <%}else{%>
+                        NA
+                    <%}%>       
+                </td>
+            </tr>
+            <tr class="text-center" style="width: 100%;">
+                <input type="hidden" name="store_address" value="<%=store.store_address%>">
+                <input type="hidden" name="distributor" value="<%=store.distributor%>">
+                <td style="width: 50%;"><span><b>ADDRESS :  </b></span><%=store.store_address%></td>
+                <td style="width: 50%;"><span><b>Distributor:  </b></span><%=store.distributor%></td>
+            </tr>
+        </table>
+        <table class="mt-5" id="confirmation-table">
+            <tr class="text-center">
+                <th><b>Commodity</b></th>
+                <th><b>Unit</b></th>
+                <th><b>Rate</b></th>
+                <th><b>Price</b></th>
+            </tr>
+            <% var total = 0 %>
+             <% for(let i=0; i< store.commodities.length; i++){ %>
+                <input type="hidden" name="commodity" value="<%= store.commodities[i].item %>">
+                <input type="hidden" name="unit" value="<%=members_qty+1%>">
+                <input type="hidden" name="rate" value="<%= store.commodities[i].rate %>">
+                <input type="hidden" name="price" value="<%= store.commodities[i].rate * (members_qty+1) %>">
+               <tr class="text-center">
+                <td><%= store.commodities[i].item %></td>
+                <td><%=members_qty+1%>Kg</td>
+                <td><%= store.commodities[i].rate %>/Kg</td>
+                <td>₹<%= store.commodities[i].rate * (members_qty+1) %></td>
+               </tr>
+               <% total = total + (store.commodities[i].rate * (members_qty+1))  %>
+            <%}%>
+            <input type="hidden" name="total" value="<%= total %>">
+    <td colspan="3" class="text-end"><b>Grand Total :</b></td> 
+    <td class="text-center"><b>₹<%= total %></b></td>
+</tr>
+        </table>
+        <div class="confirmation-btn text-center">
+            <input type="submit" class="btn btn-success mt-5" placeholder="confirm">
+        </div>
+    </form>
+        </div>
+       </div>
+</div>
+<%- include('./footer.ejs') %>

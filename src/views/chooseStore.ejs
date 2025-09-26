@@ -1,0 +1,66 @@
+<%- include('./header.ejs') %>
+<div class="pin-card-container" onclick="getTable()">
+    <!-- <form class="pin-card-form"> -->
+    <div class=" pin-card mt-5">
+    <div class="pin-card-header-back text-center " id="pin-card-header-back">
+        <h3 class="mt-4" id="pin-heading-back">
+        </h3>
+    </div>
+    <div class="pin-card-form-back" id="pin-card-back">
+       
+        <div class="table-container">
+            <% if(stores.length > 0) { %>
+                <table id="store-table">
+                    <tr>
+                    <th class="text-center" style="width: 10%;">FPS ID</th>
+                    <th class="text-center">Address</th>
+                    <th class="text-center">Book</th>
+                </tr>
+                <%for(let store of stores){%>
+                <tr>
+                    <td class="text-center"><%=store.fps_id%></td>
+                    <td class="text-center"><%=store.store_address%></td>
+                    <%if(flag){%>
+                        <td class="text-center"><a href="/app/storeinfo/<%=store.fps_id%>"><button class="btn btn-info"> Info</button></a></td>
+                        <%}else{%>
+                            <td class="text-center"><a href="/app/slots/<%=store.fps_id%>"><button class="btn btn-success"> GO</button></a></td>
+                            <%}%>
+                   
+                </tr>
+                <%}%>
+                </table>
+                <%} else{ %>
+                    <h2>No store Found</h2>
+                    <%} %>
+            
+        </div>
+        <%if(flag){%>
+            <button type="submit" class="mt-4 pin-card-button-back" id="pin-card-back-btn"><a href="/app/findtheStore" style="color: black !important;"><i class="fa fa-angle-left" style="font-size:22px;"></i></a></button>
+        <%}else{%>
+            <button type="submit" class="mt-4 pin-card-button-back" id="pin-card-back-btn"><a href="/app/bookyourappointment" style="color: black !important;"><i class="fa fa-angle-left" style="font-size:22px;"></i></a></button>
+        <%}%>
+    </div>
+    </div>
+
+</div>
+</div>
+</div>
+</body>
+<script>
+var j = 0;
+     var text = 'Choose Your Store'; 
+     var speed2 = 50; 
+
+    function typingr() {
+    if (j < text.length) {
+    document.getElementById("pin-heading-back").innerHTML += text.charAt(j);
+    j++;
+    setTimeout(typingr, speed2);
+  }
+  
+}
+
+window.onload = typingr();
+
+</script>
+</html>

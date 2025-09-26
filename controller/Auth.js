@@ -8,14 +8,14 @@ const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
 const {validationResult, header} = require('express-validator');
 const { connect } = require('mongoose');
-const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-        user: 'hannah.schneider39@ethereal.email',
-        pass: 'UmXxGPDsm7fFZWZuER'
-    }
-});
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp.ethereal.email',
+//     port: 587,
+//     auth: {
+//         user: 'hannah.schneider39@ethereal.email',
+//         pass: 'UmXxGPDsm7fFZWZuER'
+//     }
+// });
 exports.getAuth = (req ,res , next )=> {
     res.clearCookie('connect.sid').render('auth',{
         errorMessage:'',
@@ -117,28 +117,27 @@ User.findOne({aadhar:aadhar})
     Admin.findOne({'aadhar.aadhar_Id':req.body.aadhar,'aadhar.name':name})
     .then(id=>{
         if(id){
-            console.log(id);
             user.save();
-            console.log('User Created');
-             transporter.sendMail({
-                to :email,
-                from:"prasher6789@gmail.com",
-                subject:"Signup succeeded!",
-                html:'<h1>You successfully signed up!</h1><br><h2>Here is your password:'+password})
-                return res.status(422).render('auth',{
-                    errorMessage:"Sign Up successfull, password sent on Email",
-                    oldInput:"",
-                    validationErrors:"",
-                    tab:'tab2'
-                });
+            // console.log('User Created');
+            //  transporter.sendMail({
+            //     to :email,
+            //     from:"prasher6789@gmail.com",
+            //     subject:"Signup succeeded!",
+            //     html:'<h1>You successfully signed up!</h1><br><h2>Here is your password:'+password})
+            //     return res.status(422).render('auth',{
+            //         errorMessage:"Sign Up successfull, password sent on Email",
+            //         oldInput:"",
+            //         validationErrors:"",
+            //         tab:'tab2'
+            //     });
         }
         else{
             console.log('User not Created');
-               transporter.sendMail({
-                to :email,
-                from:"prasher6789@gmail.com",
-                subject:"Signup Failed",
-                html:'<h1>either your aadhar number is incorrect or your aadhar is not linked with your Ration card</h1><br>'})
+            //    transporter.sendMail({
+            //     to :email,
+            //     from:"prasher6789@gmail.com",
+            //     subject:"Signup Failed",
+            //     html:'<h1>either your aadhar number is incorrect or your aadhar is not linked with your Ration card</h1><br>'})
             return res.status(422).render('auth',{
                 errorMessage:"Aadhar or Name is Incorrect, SignUp with correct credentials",
                 oldInput:{aadhar:aadhar,name:name,email:email},
@@ -189,7 +188,8 @@ exports.postStorelogin = (req,res,next)=>{
             .then(
                 store=>{
                     if(store){
-                     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false , });
+                    //  const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false , });
+                    const otp = 1234;
                      Store.updateOne({fps_id:entered_fps_id},{$set:{otp:otp}})
                      .then(flag=>{
                         if(flag){
@@ -199,11 +199,11 @@ exports.postStorelogin = (req,res,next)=>{
                             //     oldInput :{store_email:'',entred_fps_id:''},
                             //     validationErrors:[]
                             // });
-                            return transporter.sendMail({
-                                to :store_email,
-                                from:"prasher6789@gmail.com",
-                                subject:"OTP for Sign In EasyRation FPS",
-                                html:'<h1>Your One time password is :'+otp+'</h1>'});
+                            // return transporter.sendMail({
+                            //     to :store_email,
+                            //     from:"prasher6789@gmail.com",
+                            //     subject:"OTP for Sign In EasyRation FPS",
+                            //     html:'<h1>Your One time password is :'+otp+'</h1>'});
                         }
                      })
                      .catch(err=>{

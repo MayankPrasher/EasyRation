@@ -15,14 +15,14 @@ const PDFDocument = require('pdfkit');
 const user = require('../models/user');
 const central = require('../models/central');
 // mongoose.set('debug', true);
-const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-        user: 'aniya.leannon@ethereal.email',
-        pass: 'ZPMw5uHSMdpw91y4Y7'
-    }
-});
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp.ethereal.email',
+//     port: 587,
+//     auth: {
+//         user: 'aniya.leannon@ethereal.email',
+//         pass: 'ZPMw5uHSMdpw91y4Y7'
+//     }
+// });
 
 exports.getmain = (req ,res , next )=> {
     const aadhar = req.session.user.aadhar;

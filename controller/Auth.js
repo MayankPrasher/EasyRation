@@ -124,12 +124,12 @@ User.findOne({aadhar:aadhar})
             //     from:"prasher6789@gmail.com",
             //     subject:"Signup succeeded!",
             //     html:'<h1>You successfully signed up!</h1><br><h2>Here is your password:'+password})
-            //     return res.status(422).render('auth',{
-            //         errorMessage:"Sign Up successfull, password sent on Email",
-            //         oldInput:"",
-            //         validationErrors:"",
-            //         tab:'tab2'
-            //     });
+                return res.status(422).render('auth',{
+                    errorMessage:"Sign Up successfull, password sent on Email",
+                    oldInput:"",
+                    validationErrors:"",
+                    tab:'tab2'
+                });
         }
         else{
             console.log('User not Created');

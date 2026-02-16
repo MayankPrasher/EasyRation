@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const moongoose = require("mongoose");
 const authRoutes = require("./routes/Auth");
 const mainRoutes = require("./routes/main");
+const storeRoutes = require("./routes/store");
 const flash = require("connect-flash");
 const session = require("express-session");
 const cron = require("node-cron");
@@ -34,6 +35,7 @@ app.use(flash());
 // app.use(flash());
 app.use("/", authRoutes);
 app.use("/app", mainRoutes);
+app.use("/store", storeRoutes);
 cron.schedule("0 0 * * *", mainController.updateSlot, {
   scheduled: true,
   timezone: "Asia/Kolkata",

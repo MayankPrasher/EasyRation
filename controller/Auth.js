@@ -54,7 +54,7 @@ exports.postAuthlogin = (req ,res , next )=> {
                 req.session.isLoggedIn = true;
                 req.session.user = flag;
                 // console.log("User is authentic");
-                return res.redirect('https://easy-ration.onrender.com/app/main');
+                return res.redirect('http://localhost:4001/app/main');
             }
             else{
                 return res.status(422).render('auth',{
@@ -252,7 +252,7 @@ else{
         if(store){
             req.session.isLoggedIn = true;
             req.session.user = store;
-          res.redirect('/app/store-dash');
+          res.redirect('/store/store-dash');
         }
         else{
             return res.status(422).render('otp',{
@@ -268,9 +268,7 @@ else{
         console.log(err);
     }
 );
-}
-
-    
+}    
 };
 exports.postLogout = (req,res,next)=>{
     req.session.destroy(err => {

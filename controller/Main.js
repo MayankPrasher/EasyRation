@@ -188,7 +188,6 @@ exports.getmain = (req ,res , next )=> {
     .catch(err=>{
         console.log(err);
     })
-  
 };
 exports.getStores = (req , res, next) =>{
     var flag = undefined;
@@ -658,10 +657,10 @@ exports.postUpdate = (req,res,next)=>{
         console.log(err);
     })
 }
-exports.getslotManage = (req,res,next)=>{
-    const store_id = req.params.store_id;
+// exports.getslotManage = (req,res,next)=>{
+//     const store_id = req.params.store_id;
 
-}
+// }
 exports.getstore = (req,res,next)=>{
     const store_id = req.params.store_id;
     const store_name = req.session.user.store_name;
@@ -932,7 +931,7 @@ exports.completeConfirmation = (req,res,next)=>{
                     rate:rate
                 });
                 order.save();
-                res.redirect('https://easy-ration.onrender.com/app/userPreviousTrans');
+                res.redirect('http://localhost:4001/app/userPreviousTrans');
                 // return response.data;
             // })
         //     .then(result=>{

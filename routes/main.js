@@ -14,8 +14,8 @@ router.post('/getStores',isAuth,[
     .withMessage('Enter valid pincode')
 ],mainController.getStores);
 // router.get('/slots',authController.getSlots);
-router.get('/store-dash',isAuth,mainController.getStoreDash);
-router.get('/userRegistration',isAuth,mainController.getuserRegistration);
+router.get('/store-dash',isAuth,mainController.getStoreDash);//STORE
+router.get('/userRegistration',isAuth,mainController.getuserRegistration);//STORE
 router.post('/userRegistration',[
     check('aadhar_id')
     .isNumeric()
@@ -37,7 +37,7 @@ router.post('/userRegistration',[
     .isNumeric()
     .isLength({min:4,max:4})
     .withMessage('Enter Valid FPS ID')
-],isAuth,mainController.postuserRegistration);
+],isAuth,mainController.postuserRegistration);//STORE
 router.post('/memberRegistration',
 [
     check('member')
@@ -45,20 +45,20 @@ router.post('/memberRegistration',
     .isLength({min:12,max:12})
     .withMessage('Enter Valid Aadhar Number')
 ],
-isAuth,mainController.postmemberRegistration);
+isAuth,mainController.postmemberRegistration);//STORE
 router.get('/confirmation/:store',isAuth,mainController.getConfirmation);
 router.get('/findtheStore',mainController.getfindtheStore);
 router.get('/storeinfo/:id',isAuth,mainController.getStoreinfo);
 router.get('/slots/:store_id',isAuth,mainController.getSlots);
-router.get('/inventory/:store_id',isAuth,mainController.getInventory);
-router.get('/update',isAuth,mainController.getUpdate);
-router.post('/update',isAuth,mainController.postUpdate);
-router.get('/slotManage/:store_id',isAuth,mainController.getslotManage);
+router.get('/inventory/:store_id',isAuth,mainController.getInventory);//STORE
+router.get('/update',isAuth,mainController.getUpdate);//STORE
+router.post('/update',isAuth,mainController.postUpdate);//STORE
+// router.get('/slotManage/:store_id',isAuth,mainController.getslotManage);
 router.get('/store/:store_id',isAuth,mainController.getstore);
 router.post('/confirm',isAuth,mainController.completeConfirmation);
 router.get('/userPreviousTrans',isAuth,mainController.getuserPreviousTrans);
-router.get('/upcomingStoretrans',isAuth,mainController.getupcomingStoretrans);
-router.get('/storePrevTrans',isAuth,mainController.getstorePrevTrans);
+router.get('/upcomingStoretrans',isAuth,mainController.getupcomingStoretrans);//STORE
+router.get('/storePrevTrans',isAuth,mainController.getstorePrevTrans);//STORE
 router.get('/confrecipt/:order_id',isAuth,mainController.getconfrecipt);
 router.get('/recipt/:order_id',isAuth,mainController.getrecipt);
 router.get('/completetrans/:order_id',isAuth,mainController.getcompletetrans);

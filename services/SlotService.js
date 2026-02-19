@@ -1,7 +1,6 @@
-// services/SlotService.js
+
 const DailySchedule = require('../models/DailySchedule');
 
-// 👇 THIS IS THE FIX: Make sure this array has all 15 slots in it!
 const DEFAULT_SLOTS = [
   { time: 900 }, { time: 920 }, { time: 940 },
   { time: 1000 }, { time: 1020 }, { time: 1040 },
@@ -14,7 +13,7 @@ exports.getOrGenerateSchedule = async (fpsId, dateString) => {
   let schedule = await DailySchedule.findOne({ fps_id: fpsId, date: dateString });
 
   if (!schedule) {
-    console.log(`Generating fresh slots for Store ${fpsId} on ${dateString}...`); // Helpful debug log
+    console.log(`Generating fresh slots for Store ${fpsId} on ${dateString}...`); 
     
     schedule = new DailySchedule({
       fps_id: fpsId,

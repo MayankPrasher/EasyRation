@@ -7,7 +7,6 @@ const Admin = require("../models/central");
 const Order = require("../models/order");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const axios = require("axios");
 const { validationResult } = require("express-validator");
 var mongoose = require("mongoose");
@@ -17,6 +16,7 @@ const central = require("../models/central");
 const RationService = require("../services/RationService");
 const StoreService = require('../services/StoreService');
 const OrderService = require('../services/OrderService');
+const SlotService = require("../services/SlotService");
 // mongoose.set('debug', true);
 // const transporter = nodemailer.createTransport({
 //     host: 'smtp.ethereal.email',
@@ -47,7 +47,6 @@ exports.getStores = (req, res, next) => {
   var flag = undefined;
   if (req.params.flag) {
     flag = req.params.flag;
-    console.log(flag);
   }
   const enteredpin = req.body.enteredpin;
   const errors = validationResult(req);
@@ -87,33 +86,46 @@ exports.getStores = (req, res, next) => {
     });
 };
 
-exports.getBooking = (req, res, next) => {
+exports.getBooking = async (req, res, next) => {
+  try{
   const aadhar = req.user.aadhar;
-  User.findOne({ aadhar: aadhar })
-    .then((user) => {
-      if (!user) {
-        console.log("user not found");
-      } else {
-        if (user.monthlyQuota) {
-          res.render("Nobooking", {
-            aadhar_name: req.user.name,
-            aadhar: req.user.aadhar,
-            oldInput: "",
-            errorMessage: "",
-          });
-        } else {
-          res.render("booking", {
-            aadhar_name: req.user.name,
-            aadhar: req.user.aadhar,
-            oldInput: "",
-            errorMessage: "",
-          });
-        }
-      }
+  const user = await User.findOne({
+    aadhar:aadhar})
+
+    if(!user){
+      console.log("user not found")
+      return res.redirect('/')
+    }
+
+    if(user.monthlyQuota){
+      return res.render("Nobooking",{
+        aadhar_name:req.user.name,
+        aadhar:req.user.aadhar,
+        oldInput:"",
+        errorMessage:"",
+      })
+    }
+
+    const pendingOrder = await Order.findOne({aadhar:aadhar, complete:false})
+    if(pendingOrder){
+      return res.render("Nobooking",{
+        aadhar_name:req.user.name,
+        aadhar:req.user.aadhar,
+        oldInput:"",
+        errorMessage:"You already have a pending booking. Please visit the store to verify your receipt before booking another."
+      })
+    }
+
+    res.render("booking",{
+      aadhar_name:req.user.name,
+      aadhar: req.user.aadhar,
+      oldInput:"",
+      errorMessage:"",
     })
-    .catch((err) => {
-      console.log(err);
-    });
+  }catch(err){
+    console.log(err);
+    next(err);
+  }
 };
 exports.getStoreDash = async (req, res, next) => {
   try{
@@ -272,116 +284,58 @@ exports.postmemberRegistration = (req, res, next) => {
     });
 };
 
-exports.getSlots = (req, res, next) => {
-  const aadhar = req.user.aadhar;
-  User.findOne({ aadhar: aadhar })
-    .then((user) => {
-      if (!user) {
-        console.log("user not found");
-      } else {
-        if (user.monthlyQuota) {
-          res.render("Nobooking", {
-            aadhar_name: req.user.name,
-            aadhar: req.user.aadhar,
-            oldInput: "",
-            errorMessage: "",
-          });
-        } else {
-          const store_id = req.params.store_id;
-          const update = {
-            $pull: {
-              slots: {
-                $or: [{ booked: { $gte: 10 } }, { active: false }],
-              },
-            },
-          };
-          Store.updateOne({ fps_id: store_id }, update).then((ack) => {
-            console.log(ack);
-          });
-          Store.findOne({ fps_id: store_id }).then((store) => {
-            if (store) {
-              const slots = store.slots;
-              return res.render("slots", {
-                aadhar_name: req.user.name,
-                aadhar: req.user.aadhar,
-                slots: slots,
-                store_id: store_id,
-                errorMessage: "",
-                oldInput: "",
-              });
-            } else {
-              console.log("Store Not Found");
-            }
-          });
-        }
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-exports.updateSlot = async () => {
-  const update = {
-    $set: {
-      "slots.0.slot": 900,
-      "slots.0.booked": 0,
-      "slots.0.active": true,
-      "slots.1.slot": 920,
-      "slots.1.booked": 0,
-      "slots.1.active": true,
-      "slots.2.slot": 940,
-      "slots.2.booked": 0,
-      "slots.2.active": true,
-      "slots.3.slot": 1000,
-      "slots.3.booked": 0,
-      "slots.3.active": true,
-      "slots.4.slot": 1020,
-      "slots.4.booked": 0,
-      "slots.4.active": true,
-      "slots.5.slot": 1040,
-      "slots.5.booked": 0,
-      "slots.5.active": true,
-      "slots.6.slot": 1100,
-      "slots.6.booked": 0,
-      "slots.6.active": true,
-      "slots.7.slot": 1120,
-      "slots.7.booked": 0,
-      "slots.7.active": true,
-      "slots.8.slot": 1140,
-      "slots.8.booked": 0,
-      "slots.8.active": true,
-      "slots.9.slot": 1200,
-      "slots.9.booked": 0,
-      "slots.9.active": true,
-      "slots.10.slot": 1220,
-      "slots.10.booked": 0,
-      "slots.10.active": true,
-      "slots.11.slot": 1240,
-      "slots.11.booked": 0,
-      "slots.11.active": true,
-      "slots.12.slot": 1400,
-      "slots.12.booked": 0,
-      "slots.12.active": true,
-      "slots.13.slot": 1420,
-      "slots.13.booked": 0,
-      "slots.13.active": true,
-      "slots.14.slot": 1440,
-      "slots.14.booked": 0,
-      "slots.14.active": true,
-    },
-  };
-  try {
-    await Store.updateMany({}, update);
-  } catch (err) {
-    console.error("Error to update the slot", err);
+exports.getSlots = async (req, res, next) => {
+  try{
+    const aadhar = req.user.aadhar
+    const user = await User.findOne({
+      aadhar:aadhar})
+    if(!user){
+      console.log("user not found")
+      return res.redirect('/')
+    }
+    if(user.monthlyQuota){
+      return res.render("Nobooking",{
+        aadhar_name: req.user.name,
+        aadhar:req.user.aadhar,
+        oldInput:"",
+        errorMessage:"",
+      })
+    }
+
+    const store_id = req.params.store_id
+
+    const todayString = new Date().toISOString().split('T')[0]
+
+     let targetDate = req.query.date
+     if(!targetDate){
+      targetDate = todayString
+     }
+     if(targetDate<todayString){
+      return res.status(400).render('booking',{
+        aadhar_name: req.user.name,
+        aadhar: req.user.aadhar,
+        oldInput:"",
+        errorMessage:"Invalid request: You cannot book slots for a date in the past.",
+      })
+     }
+
+     const schedule = await SlotService.getOrGenerateSchedule(store_id,targetDate)
+
+     return res.render("slots",{
+      aadhar_name : req.user.name,
+      aadhar: req.user.aadhar,
+      slots: schedule.slots,
+      store_id: store_id,
+      targetDate: targetDate,
+      errorMessage:"",
+      oldInput:"",
+     })
+  } catch(err){
+    console.log(err);
+    next(err)
   }
 };
+
 exports.updateUserMonth = async () => {
   try {
     await User.updateMany({}, { $set: { monthlyQuota: false } });
@@ -392,8 +346,10 @@ exports.updateUserMonth = async () => {
 exports.getConfirmation = (req, res, next) => {
   const store_id = req.params.store;
   const slot = req.query.slot;
+  const targetDate = req.query.date;
   const user = req.user;
   const aadhar = user.aadhar;
+
   Admin.findOne({ "aadhar.aadhar_Id": aadhar })
     .then((data) => {
       const members_qty = data.ration_details.member_quantity;
@@ -404,6 +360,7 @@ exports.getConfirmation = (req, res, next) => {
             aadhar: req.user.aadhar,
             slot: slot,
             store_id: store_id,
+            targetDate:targetDate,
             members_qty: members_qty,
             user: user,
             store: store,
@@ -542,226 +499,67 @@ exports.getStoreinfo = (req, res, next) => {
       console.log(err);
     });
 };
-exports.completeConfirmation = (req, res, next) => {
-  const store_name = req.body.store_name;
-  const slot = Number(req.body.slot);
-  const store_address = req.body.store_address;
-  const distributor = req.body.distributor;
-  const commodity = req.body.commodity;
-  const unit = req.body.unit;
-  const rate = req.body.rate;
-  const price = req.body.price;
-  const total = Number(req.body.total);
-  const store_id = Number(req.body.store_id);
-  const aadhar = Number(req.user.aadhar);
-  const date = new Date();
+exports.completeConfirmation = async (req, res, next) => {
 
-  const commodities = [];
+  try{
+    const store_name = req.body.store_name
+    const slot = Number(req.body.slot)
+    const store_address = req.body.store_address
+    const distributor = req.body.distributor
+    const commodity = req.body.commodity || [];
+    const unit = req.body.price||[]
+    const rate = req.body.rate || []
+    const price = req.body.price || []
+    const total = Number(req.body.total)
+    const store_id = Number(req.body.store_id)
+    const aadhar = Number(req.user.aadhar)
 
-  for (let i = 0; i < commodity.length; i++) {
-    commodities[i] = {
-      commodity: commodity[i],
-      unit: Number(unit[i]),
-      price: Number(price[i]),
-      rate: Number(rate[i]),
-    };
+    const targetDate = req.body.date || new Date().toISOString().split('T')[0]
+
+    const pendingOrder = await Order.findOne({
+      aadhar:aadhar,completed:false})
+    if(pendingOrder){
+      return res.status(400).send("Action Denied: You already have a pending confirmation receipt.");
+    }
+
+    const commodities = []
+
+    for(let i = 0; i<commodity.length; i++){
+      commodities[i] = {
+        commodity: commodity[i],
+        unit: Number(unit[i]),
+        price: Number(price[i]),
+        rate: Number(rate[i]),
+      }
+    }
+
+    await SlotService.bookSlot(store_id,targetDate,slot);
+
+    const order = new Order({
+      aadhar: aadhar,
+      store_id:store_id,
+      completed:false,
+      slot: slot,
+      date: new Date(),
+      commodities: commodities,
+      total: total,
+      unit:unit,
+      price:price,
+      rate:rate,
+    })
+     await order.save();
+
+     res.redirect("/app/userPreviousTrans");
+  }catch(err){
+    console.error("Booking Error:", err.message)
+
+    res.status(400).send("Transaction Failed: "+ err.message)
   }
-  // const updateQuery = {
-  //     $inc: {
-  //       "commodities.$[elem].stock": -Number(unit[0])
-  //     }
-  //   };
-  // const updateBookQuery = {
-  //     $inc: {
-  //       "slots.$[elem].booked": 1
-  //     }
-  //   };
-  //   var bookFilter =[];
-  //   if(slot==900){
-  //     bookFilter = [{
-  //         "elem.slot":900
-  //       }];
-  //   }
-  //   else if(slot==920){
-  //      bookFilter = [{
-  //         "elem.slot":920
-  //       }];
-  //   }
-  //   else if(slot==940){
-  //      bookFilter = [{
-  //         "elem.slot":940
-  //       }];
-  //   }
-  //   else if(slot==1000){
-  //      bookFilter = [{
-  //         "elem.slot":1000
-  //       }];
-  //   }
-  //   else if(slot==1020){
-  //      bookFilter = [{
-  //         "elem.slot":1020
-  //       }];
-  //   }
-  //   else if(slot==1040){
-  //      bookFilter = [{
-  //         "elem.slot":1040
-  //       }];
-  //   }
-  //   else if(slot==1100){
-  //      bookFilter = [{
-  //         "elem.slot":1100
-  //       }];
-  //   }
-  //   else if(slot==1120){
-  //      bookFilter = [{
-  //         "elem.slot":1120
-  //       }];
-  //   }
-  //   else if(slot==1140){
-  //      bookFilter = [{
-  //         "elem.slot":1140
-  //       }];
-  //   }
-  //   else if(slot==1200){
-  //      bookFilter = [{
-  //         "elem.slot":1200
-  //       }];
-  //   }
-  //   else if(slot==1220){
-  //      bookFilter = [{
-  //         "elem.slot":1200
-  //       }];
-  //   }
-  //   else if(slot==1240){
-  //  bookFilter = [{
-  //         "elem.slot":1200
-  //       }];
-  //   }
-  //   else if(slot==1400){
-  //      bookFilter = [{
-  //         "elem.slot":1200
-  //       }];
-  //   }
-  //   else if(slot==1420){
-  //      bookFilter = [{
-  //         "elem.slot":1200
-  //       }];
-  //   }
-  //   else if(slot==1440){
-  //      bookFilter = [{
-  //         "elem.slot":1200
-  //       }];
-  //   }
-  //   console.log(bookFilter);
-  //   const riceFilter = [{
-  //     "elem.item":"Rice"
-  //   }];
-  //   const wheatFilter = [{
-  //     "elem.item":"Wheat"
-  //   }];
-  //   const sugarFilter = [{
-  //     "elem.item":"Sugar"
-  //   }];
-  //   const oilFilter = [{
-  //     "elem.item":"Kerosene"
-  //   }];
-  // console.log(commodities);
-  // console.log(store_id);
-  // console.log(aadhar);
-  // console.log(date);
-  // const data = {
-  //     "merchantId": "M2306160483220675579140",
-  //     "merchantTransactionId": "e3e1mmcccdmm9ef8vdfmd7b",
-  //     "merchantUserId": "MUID123",
-  //     "amount": total*100,
-  //     "redirectUrl": "http://localhost:4001/app/userPreviousTrans",
-  //     "redirectMode": "REDIRECT",
-  //     // "callbackUrl": "https://webhook.site/callback-url",
-  //     "mobileNumber": "9999999999",
-  //     "paymentInstrument": {
-  //       "type": "PAY_PAGE"
-  //     }
-  //   }
-  //   const payload = JSON.stringify(data);
-  //   const payloadMain = Buffer.from(payload).toString('base64');
-  //   const key = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
-  //   const keyIndex = 1;
-  //   const string = payloadMain + '/pg/v1/pay'+key;
-  //   const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-  //   const checksum = sha256 + "###" +keyIndex;
-  //     const options = {
-  //     method: 'post',
-  //     url: 'https://mercury-uat.phonepe.com/v3/charge',
-  //     headers: {
-  //             accept: 'application/json',
-  //             'Content-Type': 'application/json',
-  //             'X-VERIFY':checksum
-  //                     },
-  //     data: {
-  //         request : payloadMain
-  //     }
-  //     };
-  // axios
-  // .request(options)
-  // .then(function (response) {
-  //    Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:riceFilter})
-  //    .then(
-  //     ack=>{
-  //         Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:wheatFilter})
-  //         .then(
-  //             ack2=>{
-  //                 Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:sugarFilter})
-  //                 .then(
-  //                     ack3=>{
-  //                         Store.updateOne({fps_id:store_id},updateQuery,{arrayFilters:oilFilter})
-  //                        .then(
-  //                         Store.updateOne({fps_id:store_id},updateBookQuery,{arrayFilters:bookFilter})
-  //                         .then(
-  //                             ack5=>{
-  //                                 User.updateOne({aadhar:req.user.aadhar},{$set:{monthlyQuota:true}})
-  //                                 .then(ack7=>{
-  //                                     console.log(ack7)
-  //                                 })
-  //                                 .catch(err=>{
-  //                                     console.log(err);
-  //                                 })
-  //                             }
-  //                         )
-  //                        )
-  //                     }
-  //                 )
-  //             }
-  //         )
-  //         .catch(err=>{
-  //             console.log(err);
-  //         })
-  //     }
-  //    )
-  const order = new Order({
-    aadhar: aadhar,
-    store_id: store_id,
-    completed: false,
-    slot: slot,
-    date: date,
-    commodities: commodities,
-    total: total,
-    unit: unit,
-    price: price,
-    rate: rate,
-  });
-  order.save();
-  res.redirect("http://localhost:4001/app/userPreviousTrans");
-  // return response.data;
-  // })
-  //     .then(result=>{
-  //         console.log("Success");
-  //  })
 };
 exports.getuserPreviousTrans = (req, res, next) => {
   const aadhar = req.user.aadhar;
   Order.find({ aadhar: aadhar })
     .then((orders) => {
-      console.log(orders);
       res.render("userPrevTrans", {
         aadhar_name: req.user.name,
         aadhar: req.user.aadhar,

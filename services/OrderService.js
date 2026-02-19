@@ -22,7 +22,7 @@ exports.completeTransactions = async (orderId)=>{
     if(!order) throw new Error("Order not found")
     if(order.completed) throw new Error("Order already completed")
     
-    const {store_id, commodities, slot, unit, aadhar} = order;
+    const {store_id, commodities, unit, aadhar} = order;
 
     for(let i = 0; i<commodities.length; i++){
         const item = commodities[i]
@@ -38,13 +38,7 @@ exports.completeTransactions = async (orderId)=>{
             }
         )
     }
-
-    await Store.updateOne(
-        {fps_id:store_id, "slots.slot": Number(slot)},
-        {$inc:{"slots.$.booked":1}}
-    )     
-
-
+  
     await User.updateOne(
         {aadhar:aadhar},
         {$set:{monthlyQuota:true}}

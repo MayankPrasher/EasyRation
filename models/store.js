@@ -27,22 +27,6 @@ const storeSchema = new Schema({
         type:String,
         required:true
     },
-    slots:[    {
-        slot:{
-            type:Number,
-            required:true
-             },
-         booked:{
-                type:Number,
-                required:true
-                 },
-         active:{
-            type:Boolean,
-             required:true
-                     }
-    }
-        
-    ],
     telephone:{
         type:Number,
         required:true

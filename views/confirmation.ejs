@@ -6,6 +6,7 @@
         </div>
         <div class="confirmation-card-content">
             <form action="/app/confirm" method="POST">
+             <input type="hidden" name="date" value="<%= targetDate %>">    
         <table class="mt-3">
             <tr class="text-center mt-1" style="width: 100%;">
                 <input type="hidden" name="store_id" value="<%=store_id%>">

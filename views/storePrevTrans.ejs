@@ -25,7 +25,7 @@
                     <td class="text-center"><%=order._id%></td>
                     <td class="text-center"><%=order.aadhar%></td>
                     <td class="text-center"><%=order.date%></td>
-                    <td class="text-center"><%=order.slot%></td>
+                    <td class="text-center"><%=String(order.slot).length === 3 ? String(order.slot).slice(0,1) + ":" + String(order.slot).slice(1) : String(order.slot).slice(0,2) + ":" + String(order.slot).slice(2)%></td>
                     <%if(order.completed){%>
                         <td class="text-center">Collected</td>
                     <%}else{%>
